@@ -1,0 +1,12 @@
+export(blm,
+       lexpit,
+       expit,
+       hosmerlem,
+       logistic.rd,
+       logistic.rr,
+       logistic.dispersion,
+       blm.rr,
+       ssc)
+importFrom(stats,coef,vcov)
+exportClasses(blm,lexpit)
+exportMethods(summary,print,show,coef,vcov,vcovBoot,gof,ci,predict,dispersion)
