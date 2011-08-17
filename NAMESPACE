@@ -5,8 +5,8 @@ export(blm,
        logistic.rd,
        logistic.rr,
        logistic.dispersion,
-       blm.rr,
-       ssc)
+       logistic.baseline,
+       blm.rr)
 importFrom(stats,coef,vcov)
 exportClasses(blm,lexpit)
 exportMethods(summary,print,show,coef,vcov,vcovBoot,gof,ci,predict,dispersion)

@@ -1,0 +1,2090 @@
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))
+dim(jsm.split)
+length(jsm.split)
+jsm.split[[1]]
+df <- lapply(jsm.split,process)
+df <- lapply(jsm.split[[1]],process)
+process(jsm.split[1])
+process(jsm.split[[1]])
+process(jsm.split[[2]])
+process(jsm.split[[3]])
+process(jsm.split[[4]])
+process(jsm.split[[100]])
+process(jsm.split[[101]])
+process(jsm.split[[102]])
+df <- lapply(jsm.split[1:5],process)
+df
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b>.*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> ?)([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b>.*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*)([0-9][0-9]?:[0-9][0-9])(.*)","\\2",test[time.index])#
+time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split[1:5],process)
+df
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b>.*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> ?)([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b>.*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*)([0-9][0-9]?:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])#
+time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split[1:5],process)
+df
+df <- lapply(jsm.split,process)
+df <- lapply(jsm.split[1:10],process)
+df <- lapply(jsm.split[1:50],process)
+#
+df <- lapply(jsm.split[1:40],process)
+#
+df <- lapply(jsm.split[1:30],process)
+df <- lapply(jsm.split[1:25],process)
+df <- lapply(jsm.split[1:24],process)
+df <- lapply(jsm.split[1:23],process)
+df <- lapply(jsm.split[1:22],process)
+df <- lapply(jsm.split[1:21],process)
+df <- lapply(jsm.split[1:20],process)
+df <- lapply(jsm.split[1:19],process)
+df <- lapply(jsm.split[1:18],process)
+df <- lapply(jsm.split[1:17],process)
+df <- lapply(jsm.split[1:16],process)
+jsm.split[[17]]
+process(jsm.split[[17]])
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b>.*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> ?)([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b>.*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*)([0-9][0-9]?:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])#
+time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+print(talker)#
+print(institute)#
+print(talk)#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split[1:25],process)
+jsm.split[[17]]
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b>.*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*)([0-9][0-9]?:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])#
+time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+print(talker)#
+print(institute)#
+print(talk)#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split[1:25],process)
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*)([0-9][0-9]?:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])#
+time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+print(talker)#
+print(institute)#
+print(talk)#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split[1:25],process)
+length(df)
+df <- lapply(jsm.split,process)
+jsm.split
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)
+length(df)
+df[[1]]
+jsm <- jsm.split[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,jsm.split[[i]])}
+warnings()
+jsm
+sapply(df,ncol)
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+head(jsm)
+table(jsm$time)
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*)( [0-9][0-9]?:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])#
+time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+print(talker)#
+print(institute)#
+print(talk)#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+table(jsm$time)
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*t)([0-9][0-9]?:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])#
+time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+table(df$time)
+table(jsm$time)
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*t)([0-9]|[10]:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])#
+time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+table(jsm$time)
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*)([0-9][0-9]:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])#
+time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+table(jsm$time)
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(\t\t\t\t\t\t\t)([0-9][0-9]?:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])#
+time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+table(jsm$time)
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*)([0-9][0-9]?:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])#
+time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+table(df$time)
+table(jsm$time)
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*)([0-9][0-9]?:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])[1]#
+#time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+table(jsm$time)
+?grep
+grep("[10]|[9]",8)
+grep("[10]|[9]",9)
+grep("[10]|[9]",10)
+grep("[10]|[9]",11)
+grep("10|9",11)
+grep("10|9",10)
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("(.*)([10|[0-9]]:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])[1]#
+#time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+table(jsm$time)
+grep("\t\t\t\t10:30","\t")
+grep("\t\t\t\t10:30","\\t")
+grep("\t\t\t\t10:30","\\\t")
+grep("\t\t\t\t10:30"," ")
+?grep
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("([[:space:]])([10|[0-9]]:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])[1]#
+#time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+table(jsm$time)
+grep("\t\t\t\t10:30","[[:space:]]")
+grep("[[:space:]]","\t\t\t\t10:30")
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("([[:space:]])([10|[0-9]]:[0-9][0-9] [AP][M])(.*)","\\2",test[time.index])[1]#
+#time <- min(time)#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+table(jsm$time)
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+topic.index <- grep("Invited Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("([0-9][0-9]*:[0-9][0-9] [AP][M])(.*)","\\1",test[time.index])[1]#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+table(jsm$time)
+head(jsm)
+table(jsm$institute)
+load(file="~/code/R/ipd.power.study/data/power.results.RData")#
+temp <- ipd.power.results#
+temp <- subset(temp,completeness!="Inf")#
+temp$completeness <- NULL#
+#
+combine <- rbind(meta.power.results,rbind(moi.power.results,temp))#
+combine$method <- rep(1:4,c(4,4,4,4))#
+#
+o <- order(combine$icc,combine$method)#
+#
+combine <- combine[o,]#
+#
+combine$order <- c(1:4,#
+                   1:4+8,#
+                   1:4+16,#
+                   1:4+24)
+plot(power*100~order,combine,ylim=c(0,80),pch=c(21,21,21,24)[factor(combine$method)],#
+     bg=c("white","black","gray","gray")[factor(combine$method)],cex=2,#
+     ylab="Subgroup Effect Power %",xlab="% Between of Total Covariate Variation",#
+     axes=FALSE)#
+#
+rect(xleft=0.3,xright=5,ybottom=3,ytop=56,border="gray",lwd=2)#
+rect(xleft=8,xright=13,ybottom=7,ytop=56,border="gray",lwd=2)#
+rect(xleft=16,xright=21,ybottom=10,ytop=56,border="gray",lwd=2)#
+rect(xleft=24,xright=29,ybottom=18,ytop=56,border="gray",lwd=2)#
+#
+segments(y0=combine$lower*100,y1=combine$upper*100,#
+         x0=combine$order,x1=combine$order)#
+#
+segments(y0=combine$lower*100,y1=combine$lower*100,#
+        x0=combine$order-.1,x1=combine$order+.1)#
+#
+segments(y0=combine$upper*100,y1=combine$upper*100,#
+         x0=combine$order-.1,x1=combine$order+.1)#
+#
+labels <- c("","0","10","20","30","")#
+            #
+axis(2,las=1)#
+axis(1,at=c(0,combine$order[c(2,6,10,14)],28),lab=labels,lwd.ticks=0)#
+#
+legend("topright",pch=c(21,21,21,21,21,24),bty="n",#
+       pt.bg=c("white","black","white","white","gray","gray"),#
+       cex=1.2,col=c("black","black","white","white",rep("black",2)),#
+       legend=c("Meta-regression","MAI",#
+         "",#
+         "IPD meta-analysis",#
+         "   2 available trials",#
+         "   4 available trials"))
+plot(power*100~order,combine,ylim=c(0,80),pch=c(21,21,21,24)[factor(combine$method)],#
+     bg=c("white","black","gray","gray")[factor(combine$method)],cex=1.7,#
+     ylab="Subgroup Effect Power %",xlab="% Between of Total Covariate Variation",#
+     axes=FALSE)#
+#
+rect(xleft=0.3,xright=5,ybottom=3,ytop=56,border="gray",lwd=2)#
+rect(xleft=8,xright=13,ybottom=3,ytop=56,border="gray",lwd=2)#
+rect(xleft=16,xright=21,ybottom=3,ytop=56,border="gray",lwd=2)#
+rect(xleft=24,xright=29,ybottom=3,ytop=56,border="gray",lwd=2)#
+#
+segments(y0=combine$lower*100,y1=combine$upper*100,#
+         x0=combine$order,x1=combine$order)#
+#
+segments(y0=combine$lower*100,y1=combine$lower*100,#
+        x0=combine$order-.1,x1=combine$order+.1)#
+#
+segments(y0=combine$upper*100,y1=combine$upper*100,#
+         x0=combine$order-.1,x1=combine$order+.1)#
+#
+labels <- c("","0","10","20","30","")#
+            #
+axis(2,las=1)#
+axis(1,at=c(0,combine$order[c(2,6,10,14)],28),lab=labels,lwd.ticks=0)#
+#
+legend("topright",pch=c(21,21,21,21,21,24),#
+       pt.bg=c("white","black","white","white","gray","gray"),#
+       cex=1,col=c("black","black","white","white",rep("black",2)),#
+       legend=c("Meta-regression","MAI",#
+         "",#
+         "IPD meta-analysis",#
+         "   2 available trials",#
+         "   4 available trials"))
+plot(power*100~order,combine,ylim=c(0,80),pch=c(21,21,21,24)[factor(combine$method)],#
+     bg=c("white","black","gray","gray")[factor(combine$method)],cex=1.7,#
+     ylab="Subgroup Effect Power %",xlab="% Between of Total Covariate Variation",#
+     axes=FALSE)#
+#
+rect(xleft=0.3,xright=5,ybottom=3,ytop=56,border="gray",lwd=2)#
+rect(xleft=8,xright=13,ybottom=3,ytop=56,border="gray",lwd=2)#
+rect(xleft=16,xright=21,ybottom=3,ytop=56,border="gray",lwd=2)#
+rect(xleft=24,xright=29,ybottom=3,ytop=56,border="gray",lwd=2)#
+#
+segments(y0=combine$lower*100,y1=combine$upper*100,#
+         x0=combine$order,x1=combine$order)#
+#
+segments(y0=combine$lower*100,y1=combine$lower*100,#
+        x0=combine$order-.1,x1=combine$order+.1)#
+#
+segments(y0=combine$upper*100,y1=combine$upper*100,#
+         x0=combine$order-.1,x1=combine$order+.1)#
+#
+labels <- c("","0","10","20","30","")#
+            #
+axis(2,las=1)#
+axis(1,at=c(0,combine$order[c(2,6,10,14)],28),lab=labels,lwd.ticks=0)#
+#
+legend("topright",pch=c(21,21,21,21,21,24),#
+       pt.bg=c("white","black","white","white","gray","gray"),#
+       cex=1,col=c("black","black","white","white",rep("black",2)),#
+       legend=c("Meta-regression","Meta-analysis of interactions",#
+         "",#
+         "IPD meta-analysis",#
+         "   2 available trials",#
+         "   4 available trials"))
+pdf(file="~/research/metareg/figure_power.pdf")#
+#
+plot(power*100~order,combine,ylim=c(0,80),pch=c(21,21,21,24)[factor(combine$method)],#
+     bg=c("white","black","gray","gray")[factor(combine$method)],cex=1.7,#
+     ylab="Subgroup Effect Power %",xlab="% Between of Total Covariate Variation",#
+     axes=FALSE)#
+#
+rect(xleft=0.3,xright=5,ybottom=3,ytop=56,border="gray",lwd=2)#
+rect(xleft=8,xright=13,ybottom=3,ytop=56,border="gray",lwd=2)#
+rect(xleft=16,xright=21,ybottom=3,ytop=56,border="gray",lwd=2)#
+rect(xleft=24,xright=29,ybottom=3,ytop=56,border="gray",lwd=2)#
+#
+segments(y0=combine$lower*100,y1=combine$upper*100,#
+         x0=combine$order,x1=combine$order)#
+#
+segments(y0=combine$lower*100,y1=combine$lower*100,#
+        x0=combine$order-.1,x1=combine$order+.1)#
+#
+segments(y0=combine$upper*100,y1=combine$upper*100,#
+         x0=combine$order-.1,x1=combine$order+.1)#
+#
+labels <- c("","0","10","20","30","")#
+            #
+axis(2,las=1)#
+axis(1,at=c(0,combine$order[c(2,6,10,14)],28),lab=labels,lwd.ticks=0)#
+#
+legend("topright",pch=c(21,21,21,21,21,24),#
+       pt.bg=c("white","black","white","white","gray","gray"),#
+       cex=1,col=c("black","black","white","white",rep("black",2)),#
+       legend=c("Meta-regression","Meta-analysis of interactions",#
+         "",#
+         "IPD meta-analysis",#
+         "   2 available trials",#
+         "   4 available trials"))#
+#
+dev.off()
+data(meta.search)#
+#
+meta.search <- subset(meta.search,pi.unique==TRUE)#
+meta.search <- meta.search[order(meta.search$pid),]#
+#
+noquote(paste(meta.search$pid,#
+      meta.search$topic,#
+      meta.search$outcome,#
+      meta.search$trials,#
+      meta.search$sample.size,#
+      "\\",sep="&"))#
+#
+for.csv <- subset(meta.search,select=c("id","topic","outcome","trials","sample.size")#
+write.csv(for.csv,file="~/research/metareg/data/study_table.csv",rownames=FALSE)
+library(ipd.power.study)
+meta.search <- subset(meta.search,pi.unique==TRUE)#
+meta.search <- meta.search[order(meta.search$pid),]
+#
+#
+for.csv <- subset(meta.search,select=c("id","topic","outcome","trials","sample.size"))#
+write.csv(for.csv,file="~/research/metareg/data/study_table.csv",rownames=FALSE)
+data(meta.search)#
+#
+meta.search <- subset(meta.search,pi.unique==TRUE)#
+meta.search <- meta.search[order(meta.search$pid),]
+for.csv <- subset(meta.search,select=c("id","topic","outcome","trials","sample.size"))#
+write.csv(for.csv,file="~/research/metareg/data/study_table.csv",row.names=FALSE)
+for.csv <- subset(meta.search,select=c("pid","topic","outcome","trials","sample.size"))#
+write.csv(for.csv,file="~/research/metareg/data/study_table.csv",row.names=FALSE)
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+#topic.index <- grep("Invited Papers",test)#
+topic.index <- grep("Contributed Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("([0-9][0-9]*:[0-9][0-9] [AP][M])(.*)","\\1",test[time.index])[1]#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+#jsm.data <- readLines("E:/sig/jsm2011.txt")#
+jsm.data <- readLines("~/significance/data/jsm2011_contributed.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+#topic.index <- grep("Invited Papers",test)#
+topic.index <- grep("Contributed Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("([0-9][0-9]*:[0-9][0-9] [AP][M])(.*)","\\1",test[time.index])[1]#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+print(topic)#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+####
+#
+#jsm.data <- readLines("E:/sig/jsm2011.txt")#
+jsm.data <- readLines("~/significance/data/jsm2011_contributed.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}#
+#
+jsm <- subset(jsm,time!="8:00 PM")#
+#
+### SUMMARIES#
+#
+jsm$date <- factor(jsm$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+																	#
+jsm$time <- factor(jsm$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),ordered=TRUE)																	#
+table(jsm$date,jsm$time)#
+#
+inst <- sort(table(jsm$inst),dec=TRUE)[1:10]#
+#
+keywords <- unlist(sapply(as.character(jsm$talk),function(x){strsplit(x,split=" ")}))#
+hot.topics <- sort(table(keywords),dec=TRUE)
+2011-1989
+22+150
+2014-1989
+jsm.data <- readLines("~/significance/data/jsm2011_contributed.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+jsm <- df[[1]]#
+#
+for(i in 2:length(df)){jsm <- rbind(jsm,df[[i]])}
+nrow(jsm)
+head(jsm)
+jsm$date <- factor(jsm$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+																	#
+jsm$time <- factor(jsm$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),ordered=TRUE)																	#
+table(jsm$date,jsm$time)#
+#
+inst <- sort(table(jsm$inst),dec=TRUE)[1:10]
+inst <- sort(table(jsm$inst),dec=TRUE)[1:10]
+inst
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+topic.index <- grep(" Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("([0-9][0-9]*:[0-9][0-9] [AP][M])(.*)","\\1",test[time.index])[1]#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+print(topic)#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+### CONTRIBUTED SESSION#
+#
+jsm.data <- readLines("~/significance/data/jsm2011_contributed.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+contributed <- df[[1]]#
+#
+for(i in 2:length(df)){contributed <- rbind(contributed,df[[i]])}#
+#
+contributed <- subset(contributed,time!="8:00 PM")#
+#
+### INVITED SESSION#
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+invited <- df[[1]]#
+#
+for(i in 2:length(df)){invited <- rbind(invited,df[[i]])}#
+#
+invited <- subset(invited,time!="8:00 PM")
+2011-1974
+inst
+?dotplot
+dotchart(inst,lab=names(inst))
+getlines <- function(x,i,j){x[i:j]}#
+#
+process <- function(test){#
+	#
+#
+date.index <- grep("<b>.*[0-9]\\/2011",test)#
+presenter.index <- grep("<b> [A-Z].*,.*</b>",test)#
+talk.index <- grep("abstractid",test)#
+time.index <- grep("[0-9]:[0-9][0-9]",test)#
+topic.index <- grep(" Papers",test)#
+session.index <- grep("SessionID",test)#
+#
+### PROCESSING#
+#
+date <- sub("(.*)([0-9][0-9]?\\/[0-9][0-9]?\\/2011)(.*)","\\2",test[date.index])#
+talker <- sub("(.*<b> )([A-Z].*)(,.*</b>.*)","\\2",test[presenter.index])#
+talk <- sub("(.*>)([A-Z].*)(</a>)","\\2",test[talk.index])#
+institute <- sub("(.*<b> [A-Z].*, )([A-Z].*)( </b>.*)","\\2",test[presenter.index])#
+time <- sub("([0-9][0-9]*:[0-9][0-9] [AP][M])(.*)","\\1",test[time.index])[1]#
+topic <- sub("(.*<b>)([A-Z].*)( &mdash;.*)","\\2",test[topic.index])#
+session <- sub("(.*SessionID=)([0-9].*)(..>.*)","\\2",test[session.index])#
+#
+df <- data.frame(#
+	author = talker,#
+	institute = institute,#
+	talk = talk#
+)#
+#
+df$time <- time#
+df$date <- date#
+df$topic <- topic#
+df$id <- session#
+#
+df#
+#
+}#
+#
+### CONTRIBUTED SESSION#
+#
+jsm.data <- readLines("~/significance/data/jsm2011_contributed.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+contributed <- df[[1]]#
+#
+for(i in 2:length(df)){contributed <- rbind(contributed,df[[i]])}#
+#
+contributed <- subset(contributed,time!="8:00 PM")#
+#
+### INVITED SESSION#
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+invited <- df[[1]]#
+#
+for(i in 2:length(df)){invited <- rbind(invited,df[[i]])}#
+#
+invited <- subset(invited,time!="8:00 PM")#
+#
+#
+### SUMMARIES#
+#
+jsm$date <- factor(jsm$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+																	#
+jsm$time <- factor(jsm$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),ordered=TRUE)																	#
+table(jsm$date,jsm$time)#
+#
+inst <- sort(table(jsm$inst),dec=TRUE)[1:10]#
+#
+keywords <- unlist(sapply(as.character(jsm$talk),function(x){strsplit(x,split=" ")}))#
+hot.topics <- sort(table(keywords),dec=TRUE)
+inst
+invited$date <- factor(invited$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+																	#
+invited$time <- factor(invited$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),ordered=TRUE)																	#
+table(invited$date,invited$time)#
+#
+inst <- sort(table(invited$inst),dec=TRUE)[1:10]
+inst
+contributed$date <- factor(contributed$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+																	#
+contributed$time <- factor(contributed$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),ordered=TRUE)																	#
+table(contributed$date,contributed$time)#
+#
+inst <- sort(table(contributed$inst),dec=TRUE)[1:10]
+inst
+?dotchart
+par(mfrow=c(2,1))#
+#
+dotchart(contributed.inst,label=names(contributed.inst),main="Topic Contributed Sessions")#
+dotchart(invited.inst,label=names(invited.inst),main="Topic Invited Sessions")
+### SUMMARIES#
+#
+invited$date <- factor(invited$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+																	#
+invited$time <- factor(invited$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),ordered=TRUE)													#
+invited.inst <- sort(table(invited$inst),dec=TRUE)[1:10]#
+#
+keywords <- unlist(sapply(as.character(invited$talk),function(x){strsplit(x,split=" ")}))#
+invited.hot.topics <- sort(table(keywords),dec=TRUE)#
+#
+### SUMMARIES#
+#
+contributed$date <- factor(contributed$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+#
+contributed$time <- factor(contributed$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),#
+                           ordered=TRUE)												#
+contributed.inst <- sort(table(contributed$inst),dec=TRUE)[1:10]#
+#
+keywords <- unlist(sapply(as.character(contributed$talk),function(x){strsplit(x,split=" ")}))#
+contributed.hot.topics <- sort(table(keywords),dec=TRUE)#
+#
+### PLOTS#
+#
+par(mfrow=c(2,1))#
+#
+dotchart(contributed.inst,label=names(contributed.inst),main="Topic Contributed Sessions")#
+dotchart(invited.inst,label=names(invited.inst),main="Topic Invited Sessions")
+n <- c(length(unique(contributed$id)),length(unique(invited$id)))
+n
+### CONTRIBUTED SESSION#
+#
+jsm.data <- readLines("~/significance/data/jsm2011_contributed.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+contributed <- df[[1]]#
+#
+for(i in 2:length(df)){contributed <- rbind(contributed,df[[i]])}#
+#
+contributed <- subset(contributed,time!="8:00 PM")#
+#
+### INVITED SESSION#
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+invited <- df[[1]]#
+#
+for(i in 2:length(df)){invited <- rbind(invited,df[[i]])}#
+#
+invited <- subset(invited,time!="8:00 PM")#
+#
+#
+### SUMMARIES#
+#
+invited$date <- factor(invited$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+																	#
+invited$time <- factor(invited$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),ordered=TRUE)													#
+invited.inst <- sort(prop.table(table(invited$inst)),dec=TRUE)[1:10]#
+#
+keywords <- unlist(sapply(as.character(invited$talk),function(x){strsplit(x,split=" ")}))#
+invited.hot.topics <- sort(table(keywords),dec=TRUE)#
+#
+### SUMMARIES#
+#
+contributed$date <- factor(contributed$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+#
+contributed$time <- factor(contributed$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),#
+                           ordered=TRUE)												#
+contributed.inst <- sort(prop.table(table(contributed$inst)),dec=TRUE)[1:10]#
+#
+keywords <- unlist(sapply(as.character(contributed$talk),function(x){strsplit(x,split=" ")}))#
+contributed.hot.topics <- sort(table(keywords),dec=TRUE)#
+#
+### PLOTS#
+#
+par(mfrow=c(2,1))#
+#
+n <- c(length(unique(contributed$id)),length(unique(invited$id)))#
+#
+dotchart(contributed.inst*100,label=names(contributed.inst),#
+         paste("Topic Contributed Sessions",", n=",n[1],collapse=""),#
+         pch=21,col="blue",#
+         xlab="% of sessions")#
+#
+dotchart(invited.inst*100,label=names(invited.inst),main=#
+         paste("Invited Sessions",", n=",n[2],collapse=""),#
+         pch=21,col="green",#
+         xlab="% of sessions")
+contributed.inst
+mode(contributed$inst)
+invited.inst
+paste("Topic Contributed Sessions",", n=",n[1],collapse="")
+dotchart(contributed.inst*100,label=names(contributed.inst),#
+         paste("Topic Contributed Sessions",", n=",n[1],collapse=""),#
+         pch=21,bg="blue",#
+         xlab="% of sessions")
+dotchart(as.numeric(contributed.inst)*100,label=names(contributed.inst),#
+         paste("Topic Contributed Sessions",", n=",n[1],collapse=""),#
+         pch=21,bg="blue",#
+         xlab="% of sessions")
+dotchart(contributed.inst,label=names(contributed.inst),#
+         paste("Topic Contributed Sessions",", n=",n[1],collapse=""),#
+         pch=21,bg="blue",#
+         xlab="% of sessions")
+invited.inst
+### CONTRIBUTED SESSION#
+#
+jsm.data <- readLines("~/significance/data/jsm2011_contributed.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+contributed <- df[[1]]#
+#
+for(i in 2:length(df)){contributed <- rbind(contributed,df[[i]])}#
+#
+contributed <- subset(contributed,time!="8:00 PM")#
+#
+### INVITED SESSION#
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+invited <- df[[1]]#
+#
+for(i in 2:length(df)){invited <- rbind(invited,df[[i]])}#
+#
+invited <- subset(invited,time!="8:00 PM")#
+#
+#
+### SUMMARIES#
+#
+invited$date <- factor(invited$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+																	#
+invited$time <- factor(invited$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),ordered=TRUE)													#
+invited.inst <- sort(table(invited$inst),dec=TRUE)[1:10]#
+#
+keywords <- unlist(sapply(as.character(invited$talk),function(x){strsplit(x,split=" ")}))#
+invited.hot.topics <- sort(table(keywords),dec=TRUE)#
+#
+### SUMMARIES#
+#
+contributed$date <- factor(contributed$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+#
+contributed$time <- factor(contributed$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),#
+                           ordered=TRUE)												#
+contributed.inst <- sort(table(contributed$inst),dec=TRUE)[1:10]#
+#
+keywords <- unlist(sapply(as.character(contributed$talk),function(x){strsplit(x,split=" ")}))#
+contributed.hot.topics <- sort(table(keywords),dec=TRUE)#
+#
+### PLOTS#
+#
+par(mfrow=c(2,1))#
+#
+n <- c(length(unique(contributed$id)),length(unique(invited$id)))#
+#
+dotchart(contributed.inst,label=names(contributed.inst),#
+         paste("Topic Contributed Sessions",", n=",n[1],collapse=""),#
+         pch=21,bg="blue",#
+         xlab="No. of sessions")#
+#
+dotchart(invited.inst*100,label=names(invited.inst),main=#
+         paste("Invited Sessions",", n=",n[2],collapse=""),#
+         pch=21,bg="green",#
+         xlab="No. of sessions")
+### CONTRIBUTED SESSION#
+#
+jsm.data <- readLines("~/significance/data/jsm2011_contributed.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+contributed <- df[[1]]#
+#
+for(i in 2:length(df)){contributed <- rbind(contributed,df[[i]])}#
+#
+contributed <- subset(contributed,time!="8:00 PM")#
+#
+### INVITED SESSION#
+#
+jsm.data <- readLines("~/significance/data/jsm2011.txt")#
+#
+start <- grep("<table",jsm.data)#
+end <- grep("</table>",jsm.data)#
+#
+jsm.split <- mapply(getlines,i=start,j=end,MoreArgs=list(x=jsm.data))#
+#
+df <- lapply(jsm.split,process)#
+#
+invited <- df[[1]]#
+#
+for(i in 2:length(df)){invited <- rbind(invited,df[[i]])}#
+#
+invited <- subset(invited,time!="8:00 PM")#
+#
+#
+### SUMMARIES#
+#
+invited$date <- factor(invited$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+																	#
+invited$time <- factor(invited$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),ordered=TRUE)													#
+invited.inst <- sort(table(invited$inst),dec=TRUE)[1:10]#
+#
+keywords <- unlist(sapply(as.character(invited$talk),function(x){strsplit(x,split=" ")}))#
+invited.hot.topics <- sort(table(keywords),dec=TRUE)#
+#
+### SUMMARIES#
+#
+contributed$date <- factor(contributed$date,ordered=TRUE,lab=c("Sunday, 7/31",#
+																	"Monday, 8/1",#
+																	"Tuesday, 8/2",#
+																	"Wednesday, 8/3",#
+																	"Thursday, 8/4"))#
+#
+contributed$time <- factor(contributed$time,lev=c("8:30 AM","10:30 AM","2:00 PM","4:00 PM"),#
+                           ordered=TRUE)												#
+contributed.inst <- sort(table(contributed$inst),dec=TRUE)[1:10]#
+#
+keywords <- unlist(sapply(as.character(contributed$talk),function(x){strsplit(x,split=" ")}))#
+contributed.hot.topics <- sort(table(keywords),dec=TRUE)#
+#
+### PLOTS#
+#
+par(mfrow=c(2,1))#
+#
+n <- c(length(unique(contributed$id)),length(unique(invited$id)))#
+#
+dotchart(contributed.inst,label=names(contributed.inst),#
+         paste("Topic Contributed Sessions",", n=",n[1],sep="",collapse=""),#
+         pch=21,bg="blue",#
+         xlab="No. of sessions")#
+#
+dotchart(invited.inst*100,label=names(invited.inst),main=#
+         paste("Invited Sessions",", n=",n[2],sep="",collapse=""),#
+         pch=21,bg="green",#
+         xlab="No. of sessions")
+contributed.inst
+par(mfrow=c(2,1))#
+#
+n <- c(length(unique(contributed$id)),length(unique(invited$id)))#
+#
+dotchart(contributed.inst,label=names(contributed.inst),#
+         paste("Topic Contributed Sessions",", n=",n[1],sep="",collapse=""),#
+         pch=21,bg="blue",#
+         xlab="No. of sessions")#
+#
+dotchart(invited.inst,label=names(invited.inst),main=#
+         paste("Invited Sessions",", n=",n[2],sep="",collapse=""),#
+         pch=21,bg="green",#
+         xlab="No. of sessions")
+length(names(contributed.inst))
+length(contributed.inst)
+as.numeric(contributed.inst)
+par(mfrow=c(2,1))#
+#
+n <- c(length(unique(contributed$id)),length(unique(invited$id)))#
+#
+dotchart(as.numeric(contributed.inst),label=names(contributed.inst),#
+         paste("Topic Contributed Sessions",", n=",n[1],sep="",collapse=""),#
+         pch=21,bg="blue",#
+         xlab="No. of sessions")#
+#
+dotchart(as.numeric(invited.inst),label=names(invited.inst),main=#
+         paste("Invited Sessions",", n=",n[2],sep="",collapse=""),#
+         pch=21,bg="green",#
+         xlab="No. of sessions")
+dotchart(x=as.numeric(contributed.inst),label=names(contributed.inst),#
+         paste("Topic Contributed Sessions",", n=",n[1],sep="",collapse=""),#
+         pch=21,bg="blue",#
+         xlab="No. of sessions")
+q("no")
+1/1000
+10^-3
+10e-3
+10e-4
+1e-3
+q("no")
+library(blm)
+example(summary)
+admission@fit
+q("no")
+library(blm)
+example(summary)
+example(lexpit)
+?summary
+q("no")
+library(blm)
+example(lxpit)
+example(lexpit)
+fit <- lexpit(admit~I(scale(gre)),admit~factor(rank),grad,augmented=TRUE)
+fit@fit
+q("no")
+library(blm)
+example(summary)
+example(blm)
+ecample(lexpit)
+example(lexpit)
+q("no")
+library(blm)
+example(lexpit)
+example(blm)
+library(ipd.power.study)
+data(power.results)
+data(ipd.power.results)
+objects()
+ipd.power.results
+moi.power.results
+33.7-51.8
+help(package="alabama")
+q("no")
+library(blm)#
+#
+logit <- function(x){log(x/(1-x))}#
+#
+gamma0 = c(5/100,1/100,1/500)#
+#
+fit.summary.blm <- function(data){#
+#
+	fit.blm <- tryCatch(#
+				blm(event~x+z,data),#
+				error=function(x){NA})#
+	#
+	if(class(fit.blm)=="logical"){#
+		return(fit.blm)#
+		}#
+	else{#
+#
+	 blm.coef <- coef(fit.blm)#
+	 active <- !is.null(fit.blm@active.constraints$active.constraints)#
+	 blm.se <- sqrt(diag(vcov(fit.blm)))#
+	 #
+	return(list(#
+				coef=blm.coef,#
+				se=blm.se,#
+				active=active,#
+				feasible=summary(fit.blm)$feasible#
+					))#
+ }#
+}#
+#
+#
+fit.summary.lexpit <- function(data){#
+#
+	fit.blem <- tryCatch(#
+		lexpit(event~x,event~z,data,augmented=FALSE,#
+                       par.init=list(linear=.005,expit=c(-6,3))),#
+				error=function(x){NA})#
+	#
+	if(class(fit.blem)=="logical"){#
+		return(fit.blem)#
+		}#
+	else{#
+#
+	 blem.coef <- coef(fit.blem)#
+	 active <- !is.null(fit.blem@active.constraints$active.constraints)#
+	 blem.se <- sqrt(diag(vcov(fit.blem)))#
+	 #
+	return(list(#
+				coef=blem.coef,#
+				se=blem.se,#
+				active=active,#
+				feasible=summary(fit.blem)$feasible#
+					))#
+ }#
+}#
+#
+fit.summary.logit <- function(data){#
+#
+	fit.logit <- tryCatch(#
+				glm(event~x+z,data,family=binomial),#
+				error=function(x){NA},warning=function(x){NA})#
+	#
+	if(is.logical(fit.logit)){#
+		return(fit.logit)#
+		}#
+	else{#
+	#
+	 logit.coef <- coef(fit.logit)#
+	 logit.se <- sqrt(diag(vcov(fit.logit)))#
+	 #
+	   return(list(#
+				coef=logit.coef,#
+				se=logit.se#
+					))#
+ }#
+}		#
+#
+check.estimable <- function(object){#
+	class(object)=="logical"||!all(is.finite(object$se))#
+}#
+#
+coverage <- function(beta,coef,se){#
+	#
+	lower = se#
+	upper = se#
+	coverage = se#
+	#
+	for(i in 1:length(beta)){#
+   	lower[i,] = coef[i,]-1.96*se[i,]#
+  	upper[i,] = coef[i,]+1.96*se[i,]#
+	#
+  	coverage[i,] = ifelse(beta[i]>=lower[i,]&beta[i]<=upper[i,],1,0)#
+  	}#
+  	#
+ coverage#
+}#
+#
+OLS.fail <- function(data){#
+	X <- model.matrix(event~x+z,data)#
+	U <- unique(X)#
+	beta <- solve(t(X)%*%X)%*%t(X)%*%data$event#
+	any(U%*%beta<0|U%*%beta>1) #
+}
+load(file="~/research/projects/lexpit/data/sim_continuous500_0.2.RData")#
+#
+gamma = c(.005,logit(gamma0[3]),1.25)#
+beta = c(gamma0[3],.005,expit(logit(gamma0[3])+1.25)-gamma0[3])#
+#
+summary_500_2.blm <- lapply(sim.data,fit.summary.blm)#
+blm.check <- sapply(summary_500_2.blm,check.estimable)#
+summary_500_2.blm <- summary_500_2.blm[!blm.check]#
+ols.check <- sapply(sim.data,OLS.fail)#
+coef_500_2.blm <- sapply(summary_500_2.blm,function(x){x$coef}) #
+se_500_2.blm <- sapply(summary_500_2.blm,function(x){x$se})#
+active_500_2.blm <- sapply(summary_500_2.blm,function(x){x$active})#
+#
+tab.coverage_500_2.blm <- round(apply(coverage(beta,coef_500_2.blm,se_500_2.blm),#
+																				1,mean)*100,1)#
+tab.ols.fail_500_2.blm <- round(mean(ols.check)*100,1)#
+tab.active_500_2.blm <- round(mean(active_500_2.blm)*100,1)#
+tab.coef_500_2.blm <- round(apply(coef_500_2.blm,1,mean)*100,2)#
+tab.ese_500_2.blm <- round(apply(coef_500_2.blm,1,sd)*100,2)#
+tab.se_500_2.blm <- round(apply(se_500_2.blm,1,mean)*100,2)#
+#
+summary_500_2.blem <- lapply(sim.data,fit.summary.lexpit)#
+blem.check <- sapply(summary_500_2.blem,check.estimable)#
+summary_500_2.blem <- summary_500_2.blem[!blem.check]#
+coef_500_2.blem <- sapply(summary_500_2.blem,function(x){x$coef}) #
+se_500_2.blem <- sapply(summary_500_2.blem,function(x){x$se})#
+active_500_2.blem <- sapply(summary_500_2.blem,function(x){x$active})#
+#
+tab.coverage_500_2.blem <- round(apply(coverage(gamma,#
+                                                coef_500_2.blem,se_500_2.blem),											1,mean)*100,1)#
+#
+tab.active_500_2.blem <- round(mean(active_500_2.blem)*100,1)#
+tab.coef_500_2.blem <- round(apply(coef_500_2.blem,1,mean),2)#
+tab.ese_500_2.blem <- round(apply(coef_500_2.blem,1,sd),2)#
+tab.se_500_2.blem <- round(apply(se_500_2.blem,1,mean),2)
+beta
+gamma0
+gamma
+sum(blm.check)
+sum(blem.check)
+i <- sapply(sim.data,function(x){sum(x$event)})
+summary(i)
+tab.coef_500_2.blem
+tab.coef_500_2.blm
+beta*100
+tab.coverage_500_2.blem
+tab.coverage_500_2.blm
+### SIMULATION OF RADIATION MODEL#
+### risk = expit(baseline + 1.25*z) + 0.005 * x#
+#
+logit <- function(x){log(x/(1-x))}#
+#
+get.data <- function(n,gamma0){#
+  #
+  df <- data.frame(#
+                   #
+             x = rgamma(n,shape=1,scale=5),#
+             z = rbinom(n,size=1,prob=.3)#
+#
+                   )#
+#
+     df$event = mapply(rbinom,prob=(expit(logit(gamma0)+3*df$z)+0.005*df$x),#
+       MoreArgs=list(size=1,n=1))#
+#
+  df#
+}#
+#
+N = c(500,1000,5000)#
+gamma0 = c(5/100,1/100,1/500)#
+#
+for(i in N){#
+  for(j in gamma0){#
+#
+    sim.data <- lapply(1:1000,function(void){#
+      get.data(i,j)#
+    })#
+    #
+    save(sim.data,file=paste("~/research/projects/lexpit/data/sim_continuous",i,"_",j*100,".RData",sep="",coll=""))#
+  }#
+}#
+#
+#
+### BINARY X#
+#
+#
+get.data <- function(n,gamma0){#
+  #
+  df <- data.frame(#
+                   #
+             x = rbinom(n,size=1,prob=.5),#
+             z = rbinom(n,size=1,prob=.3)#
+#
+                   )#
+#
+     df$event = mapply(rbinom,prob=(expit(logit(gamma0)+3*df$z)+0.005*5*df$x),#
+       MoreArgs=list(size=1,n=1))#
+#
+  df#
+}#
+#
+N = c(500,1000,5000)#
+gamma0 = c(5/100,1/100,1/500)#
+#
+for(i in N){#
+  for(j in gamma0){#
+#
+    sim.data <- lapply(1:1000,function(void){#
+      get.data(i,j)#
+    })#
+    #
+    save(sim.data,file=paste("~/research/projects/lexpit/data/sim_binary",i,"_",j*100,".RData",sep="",coll=""))#
+  }#
+}
+q("no")
+library(blm)
+example(blm)
+example(lexpit)
+q("no")
+library(blm)
+example(blm)
+options("warn")
+?warning
+q("no")
+library(blm)
+example(blm)
+?warning
+example(lexpit)
+q("no")
+library(blm)
+example(blm)
+q("no")
+library(blm)
+example(blm)
+example(lexpit)
+q("no")
+library(blm)
+example(lexpit)
+?vcov
+?blm
+?lexpit
+?vignette
+vignette(package="blm")
+vignette("blm")
+q("no")
+library(blm)
+vignette("blm")
+setwd("~/research/projects/code/blm/inst/doc/")
+Sweave("blm.Rnw")
+Sweave("blm.Rnw")
+load("~/research/projects/identitybinomial/data/cervical.analysis.RData")#
+cervical <- subset(cervical.analysis,age.at.enrl<55)#
+cervical$age <- cut(cervical$age.at.enrl,breaks=c(30,35,45,55),right=FALSE)
+f = cin3in5~hpv.positive.enrl+pap.positive.enrl+age*hpv.positive.enrl+prev.biopsy+prev.abnormal.pap#
+f.linear = cin3in5~hpv.positive.enrl+pap.positive.enrl#
+f.expit = cin3in5~age+age:hpv.positive.enrl+prev.biopsy+prev.abnormal.pap#
+#
+fit.blm.full <- blm(f,cervical)#
+fit.logit.full <- glm(f,cervical,family=binomial)#
+fit.blem.full <- lexpit(f.linear,f.expit,data=cervical,aug=FALSE)
+fit.blm.full@run.time
+fit.blem.full@run.time
+nrow(cervical)
+length(coef(fit.blm.full))
+coef(fit.blm.full)
+q("no")

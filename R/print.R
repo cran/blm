@@ -19,21 +19,23 @@ print.like.glm <- function(x,digits=4){
         cat(":\n")
 
         T <- beta/sqrt(diag(vcov(x)))
+        V <- sqrt(diag(vcov(x)))
         P <- mapply(pt,q=abs(T),MoreArgs=list(df=df))
         P <- 2*(1-P)
-        coeftable <- cbind(beta,T,P)
-        coeftable <- format(coeftable,digits=digits,sci=FALSE)
-        colnames(coeftable) <- c("Estimates","t-value","p-value")
+        coeftable <- cbind(beta,T,V,P)
+        coeftable <- format(coeftable,digits=digits,sci=TRUE)
+        colnames(coeftable) <- c("estimates","t-value","std. err","p-value")
                        
         print.default(coeftable, 
         print.gap = 2, quote = FALSE)
 
     cat("\nDegrees of Freedom:",df,"\n")
+    cat("Run time (sec):",x@run.time,"\n")
     LL <- -x@f.loglik(beta)
     AIC <- 2*length(beta)-2*LL
     cat("LogLik:\t   ", format(signif(LL, 
-        digits)), "\tAIC:", format(signif(AIC, digits)), "\n")
-            
+        digits)), "\tAIC:", format(signif(AIC, digits)))
+                 
     invisible(x)
 }
 

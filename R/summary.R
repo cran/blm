@@ -11,12 +11,14 @@ setMethod("summary",signature(object="blm"),function(object){
 				est=beta,
 				gradient=object@f.score(beta),
 				feasible=all(pre>0&pre<1),
+                                active = object@active.constraints$active.constraints,
 				convergence=object@fit$con,
 				message=object@fit$mess,
 				loglik=-object@fit$value,
 				df = nrow(X)-p,
 				AIC = 2*p +2*object@fit$value,
-				null.deviance = 2*object@f.loglik(c(beta[1],rep(0,p-1)))
+				null.deviance = 2*object@f.loglik(c(beta[1],rep(0,p-1))),
+                                seconds.to.run=object@run.time
 	)
 
 })
@@ -54,12 +56,15 @@ setMethod("summary",signature(object="lexpit"),function(object){
 				OR=exp(gamma[-1]),
 				gradient=object@f.score(object@fit$par),
 				feasible=all(pre>0&pre<1),
+
+             active = object@active.constraints$active.constraints,
 				convergence=object@fit$con,
 				message=object@fit$mess,
 				loglik=-object@fit$value,
 				df = nrow(X)-(p+q),
 				AIC = 2*(p+q) +2*object@fit$value,
-				null.deviance = 2*object@f.loglik(c(rep(0,p),gamma[1],rep(0,q-1)))
+				null.deviance = 2*object@f.loglik(c(rep(0,p),gamma[1],rep(0,q-1))),
+                                seconds.to.run = object@run.time
 	)
 
 })

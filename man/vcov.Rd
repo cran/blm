@@ -8,8 +8,7 @@
 
 \description{
 
-Extract large-sample Fisher Information approximation for covariance-variance matrix of the fit of a \code{blm} or \code{lexpit} model.
-
+Returns Hessian-based variance-covariance matrix of the fit of a \code{blm} or \code{lexpit} model. If any constraints are active, only the augmented Lagrangian takes this into account in the Hessian computation, so if \code{augmented} is \code{FALSE}, i.e. the adaptive barrier method of optimization is used, the covariance-variance might be inaccurate.
 }
 
 \section{Methods}{

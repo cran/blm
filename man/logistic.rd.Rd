@@ -11,16 +11,17 @@ Point estimate and confidence interval for an absolute risk difference based on 
 }
 
 \usage{
-logistic.rd(type1,type2,fit,data,sig=4,fixed=FALSE,alpha=.05)
+logistic.rd(type1, type2, type1.zero, type2.zero,fit, data, sig = 4, alpha = 0.05)
 }
 
 \arguments{
   \item{type1}{vector of covariate values for first probability estimate}
   \item{type2}{vector of covariate value for second probability estmate}
+  \item{type1.zero}{vector of logical indicators for type1 covariates to be set to zero}
+  \item{type2.zero}{vector of logical indicators for type2 covariates to be set to zero}
   \item{fit}{glm object for logistic regression}
   \item{data}{data frame on which the \code{fit} was based}
   \item{sig}{numeric number of significant digits for reported estimate}
-  \item{fixed}{logical whether zero-valued quantities should be fixed}
   \item{alpha}{numeric value to specify the 100(1-alpha)\% confidence interval for the risk difference}
 }
 
@@ -29,7 +30,7 @@ For probability of \code{type1} - probability of \code{type2}, returns a list of
 }
 
 \details{
-If \code{fixed} is \code{FALSE} then the average over all covariates represented as zero in \code{type1} and \code{type2} is taken. If \code{TRUE}, these are fixed at zero and the risk difference applies only to the risk difference between individual who share a zero covriate pattern for these factors. Because of the nonlinearity of the logistic model on the probability scale, the risk difference is a function of all covariates of the model, so will change for different covariate patterns that are still equivalent between the types being compared.
+For  covariates that are not given a fixed value of set to zero, the empirical distribution is determined from \code{data} and the marginal risk difference is computed by integrating over these factors.
 }
 
 \author{S. Kovalchik \email{s.a.kovalchik@gmail.com}}

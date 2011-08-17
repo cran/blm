@@ -19,8 +19,8 @@ Computes a confidence interval for the specified linear combination of the regre
 Computes an estimate and confidence interval for given linear combination of the model parameters specified by \code{C}.
   }
 
-  \item{ci}{\code{signature(object = "lexpit",C="numeric",alpha=0.05,sig=4,...)}:
-Computes an estimate and confidence interval for given linear combination of the model parameters specified by \code{C}.
+  \item{ci}{\code{signature(object = "lexpit",C="numeric",alpha=0.05,sig=4,baseline=TRUE,C.expit,var=NULL,...)}:
+Computes an estimate and confidence interval for given linear combination of the model parameters specified by \code{C}. If \code{baseline} is included, then the vector \code{C.expit} supplies the values for the expit components, including the intercept. The argument \code{var} is a user-supplied variance-covariance matrix, where the order has the linear parameters followed by the expit parameters. 
   }
 
  }

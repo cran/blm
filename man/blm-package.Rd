@@ -11,8 +11,8 @@ The functions \code{blm} and \code{lexpit} implement a binomial linear and linea
 \tabular{ll}{
 Package: \tab blm\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2011-04-05\cr
+Version: \tab 2011.1.1\cr
+Date: \tab 2011-08-15\cr
 Depends: R (>= 2.10.1), stats, BB, MASS, numDeriv, alabama (>= 2010.9-1)\cr
 License: \tab GPL (>= 2) \cr
 LazyLoad: \tab yes

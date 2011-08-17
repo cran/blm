@@ -25,16 +25,24 @@ List of estimates and convergence information.
 The list returned has the named components:
 
 \item{est}{vector of estimated regression coefficients. For lexpit model estimates are split into \code{est.linear} and \code{est.expit} components of list}
-\item{gradient}{partial derivative (score) evaluated at final estimates}
+\item{gradient}{partial derivative (score) evaluated at final estimates.}
 \item{feasible}{logical, whether all risks predicted from study design matrix are probabilities}
+\item{active}{matrix, covariate patterns for risk estimates at the boundary of the feasible region. If \code{NULL}, there are no active constraints.}
 \item{convergence}{scalar code on convergence result (0 indicates successful convergence)}
 \item{message}{character message when convergence is not achieved}
 \item{loglik}{numeric log-likelihood at final model estimates}
 \item{df}{degrees of freedom}
 \item{null.deviance}{deviance, twice the negative of an intercept-only fit}
+\item{second.to.run}{user elapsed seconds to fit model}
  }
 }
 
+
+\details{
+In unconstrained optimization, the elements of the gradient should be near to zero at the maximizing value of the parameters. However, when constraints are active, i.e. when the parameters are at the boundary of the feasible region, this condition might not be met.
+
+An inequality constraint is declared active if, at the final estimates of the algorithm, the evaluated inequality is near to zero. The default threshold is 1e-4. 
+}
 
 \seealso{For further details on convergence report \code{\link{constrOptim.nl}}}
 

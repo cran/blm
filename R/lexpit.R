@@ -1,5 +1,8 @@
-lexpit <- function(f.linear,f.expit,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6,adaptive=FALSE,...){
-  
+lexpit <- function(f.linear,f.expit,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6,augmented=TRUE,warn=-1,...){
+
+       warn.setting <- getOption("warn")
+       options(warn=warn)
+       
        if(missing(data)){
          stop("Dataset not supplied. Data must be given as a dataframe.")
        }
@@ -33,14 +36,11 @@ lexpit <- function(f.linear,f.expit,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6
    LL <- lexpit.loglik(f.linear,f.expit,data)
    score <- lexpit.dot.loglik(f.linear,f.expit,data)
 
-   constraints <- lexpit.constraints(f.linear,f.expit,data,A=ineq)
-
-   print(constraints$ineq(par.start$par.start))
-   print(constraints$ineq.jac(par.start$par.start))
+   constraints <- lexpit.constraints(f.linear,f.expit,data,ineq.mat=ineq)
        
    process.start = proc.time()
 
-      if(adaptive){
+      if(augmented){
         
         fit <- auglag(par=par.start$par.start,fn=LL,gr=score,										hin=constraints$ineq,hin.jac=constraints$ineq.jac,
                                      control.outer=list(trace=trace,...))
@@ -67,21 +67,32 @@ lexpit <- function(f.linear,f.expit,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6
 					  formula.expit = f.expit,
 					  constraints = constraints,
                                           active.constraints = list(),
-       					  ineq = constraints$A,
+       					  ineq = constraints$ineq.mat,
                                           n.missing=na.rm$missing,
                                           H = matrix(),
                                           V = matrix()
 					  )
 
+       if(augmented){
+          H = -fit$hessian
+          lexpit.object@active.constraints = check.auglag.lexpit.active.constraints(lexpit.object)
+        }
+       else{
           H = hessian.lexpit(lexpit.object)
+          lexpit.object@active.constraints = check.lexpit.active.constraints(lexpit.object,tol)
+        }
+       
           V = -solve(H)
 
           lexpit.object@H = H
           lexpit.object@V = V
                 
-          lexpit.object@active.constraints = check.active.constraints(lexpit.object,tol)
- 
-          
-        lexpit.object
-		
+        options(warn=warn.setting)
+
+        if(!augmented&!is.null(lexpit.object@active.constraints)){
+          warning("\nEstimates at the boundary and augmented Lagrangian not used.\nStandard errors might be inaccurate.",immediate.=TRUE,call.=FALSE)
+         }
+       
+
+ lexpit.object		
 }

@@ -42,11 +42,11 @@ ci.lexpit <- function(object,C,alpha=.05,sig=4,baseline=TRUE,C.expit,var=NULL){
     if(baseline){
       if(missing(C.expit)) stop("Baseline true but linear combination C.expit not specified.")
       est = C%*%beta+expit(C.expit%*%gamma)
-      C.dot = c(rep(1,p),C.expit*dot.expit(C.expit%*%gamma))
+      C.dot = c(C,C.expit*dot.expit(C.expit%*%gamma))
     }
     else{
       est = C%*%beta
-      C.dot = c(rep(1,p),rep(0,q))
+      C.dot = c(C,rep(0,q))
     }
 
     V = object@V

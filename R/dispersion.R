@@ -9,8 +9,9 @@ dispersion.blm <- function(object){
          if(!is.matrix(X)){
            X = matrix(X,ncol=1)
          }
+        
         X = cbind(X,Z)
-	Y <- model.frame(object@formula,object@data)[,1]
+	Y <- model.frame(object@formula.linear,object@data)[,1]
 	covariate.class <- apply(X,1,function(x){paste(x,sep="",collapse="")})
 
         }

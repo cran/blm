@@ -29,7 +29,7 @@ setClass("lexpit",
                                formula.expit = "formula",
 			       constraints = "list",
                                active.constraints = "list",
-			       ineq = "matrix",
+			       ineq = "list",
                                n.missing = "numeric",
                                H = "matrix",
                                V = "matrix"

@@ -1,3 +1,56 @@
+starting.values.lexpit <- function(f.linear,f.expit,data,par.init)
+{
+
+     	X <- model.matrix(f.linear,data)
+	Z <- model.matrix(f.expit,data)
+        
+        X.names <- colnames(X)
+        Z.names <- colnames(Z)
+        
+        int = attr(terms(f.linear),"intercept")
+        
+	if(!int){
+            if(!is.matrix(X)) X = matrix(X,ncol=1)
+            X = cbind(rep(1,nrow(Z)),X)
+          }
+        else{
+          X.names = X.names[-1]
+        }
+        
+        p = ncol(X)-1
+        q = ncol(Z)
+        A = lexpit.ineq.matrix(f.linear,data)
+	A = unique(A)
+        
+     if(!missing(par.init)){
+            beta <- par.init$linear
+            gamma <- par.init$expit
+            pi.gamma <- expit(gamma[1])
+
+       	not.feasible = any((A%*%beta<=-pi.gamma)|(A%*%beta>=1-pi.gamma))
+
+	if(not.feasible){
+             warning("Initial values were not within feasible region. Feasible starting values selected.")
+            }
+          }
+
+          f = update(f.linear,~.+1)
+          blm.start <- starting.values.blm(f,data)
+          beta <- blm.start$par.start[-1]
+          gamma <- c(log(blm.start$par.start[1]/(1-blm.start$par.start[1])),rep(0,q-1))
+          pi.gamma <- expit(gamma[1])
+           
+          not.feasible = any((A%*%beta<=-pi.gamma)|(A%*%beta>=1-pi.gamma))
+ 
+          names(beta) <- X.names
+          names(gamma) <- Z.names
+        
+   return(list(par.start=c(beta,gamma),
+               names = c(X.names,Z.names),
+               not.feasible=not.feasible))
+}
+
+
 starting.values.blm <- function(f,data,par.init)
 {
 
@@ -41,7 +94,7 @@ starting.values.blm <- function(f,data,par.init)
 }
 
 
-starting.values.lexpit <- function(f.linear,f.expit,data,par.init)
+starting.values.lexpit.old <- function(f.linear,f.expit,data,par.init)
 {
 	
 	X <- model.matrix(f.linear,data)

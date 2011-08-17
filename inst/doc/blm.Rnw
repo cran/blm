@@ -1,0 +1,372 @@
+ \documentclass[a4paper]{report}
+\usepackage{RJournal}
+\usepackage[round]{natbib}
+\bibliographystyle{abbrvnat}
+
+%\VignetteIndexEntry{Introduction to blm}
+%\VignettePackage{blm}
+
+
+\begin{document}
+\begin{article}
+
+\title{Vignette for package \texttt{blm}}
+\author{Stephanie A. Kovalchik}
+\date{\today}
+
+\maketitle
+
+\abstract{
+  
+  The \texttt{blm} package provides functions for fitting flexible binomial
+  models for cohort data with a binary outcome. The binomial
+  linear model (BLM) is a strictly linear model. The linear-expit
+  (LEXPIT) model allows risk to be expressed as a function of linear and nonlinear
+  effects, where nonlinear effects take the form of the inverse logit
+  function. Estimation of the model parameters is based on constrained
+  maximum likelihood, which ensures that the fitted model yields
+  feasible risk estimates. In this vignette, the BLM and LEXPIT model
+  classes and their methods are
+  demonstrated in risk models of type II diabetes among Pima Indians.
+  }
+
+
+\section{Binomial linear model}
+
+Given the binary event $y_i$, the probability that $Y_i = 1$ under a
+binomial linear model (BLM) is a linear function of covariates $x_i$,
+
+\[
+\pi_i = x_i'\beta
+\]
+
+\noindent Each $\beta$ of nonconstant covariates represents the risk
+difference associated with a unit change in the given covariate, when
+all other factors are fixed. 
+
+Suppose that $\tilde{x}$ is the covariate pattern for a subject from
+the target population of the model whose risk we want to estimate. To
+be a valid risk, $\tilde{x}'\beta \in (0,1)$. In general, we might not
+be able to specify all of the possible $\tilde{x}$ of our
+population. Instead, we make use of the $x_i$ from our sample and
+require that all $x_i'\beta \in (0,1)$. Thus, the set of
+covariate patterns of the sample cohort defines the \emph{feasible region}
+for $\beta$. To ensure that the estimates for $\beta$ are within the
+region of feasibility, constrained maximum likelihood is used. The
+default algorithm employed is an augmented Lagrangian method \citep{Madsen:2004}
+which is implemented with the \texttt{auglag} function of the package
+\texttt{alabama} \citep{Varadhan:2011}. An adaptive barrier method can also be used by
+setting the argument \texttt{augmented} to \texttt{FALSE} \citep{Lange:2010}. In this
+case, the function \texttt{constrOptim.nl} of \texttt{alabama}
+performs the optimization. The function \texttt{blm} provides a
+wrapper for each method in fitting the linear model.
+
+As an illustration of the model syntax we consider a model to estimate
+the risk of diabetes among Pima indians based on the \texttt{Pima.te}
+dataset of the \texttt{MASS} package. 
+
+We begin the \texttt{R} session by loading the packages with the
+binomial model fitters (\texttt{blm}) and the dataset for the analysis
+(\texttt{MASS}). The
+dataset \texttt{Pima.te} is loaded. 
+
+<<>>=
+library(blm)
+library(MASS)
+
+data(Pima.te)
+
+head(Pima.te)
+@ 
+
+The sample consists of \Sexpr{nrow(Pima.te)}  adult women of the Pima tribe in Phoenix,
+Arizona. There are eight demographic/anthropometric measures. The
+outcome of the analysis is \texttt{type}, which is a Yes/No indicator
+for WHO criteria of diabetes. 
+
+
+The fitted model will examine the risk association of age and body
+mass index on the probability of type II diabetes. The syntax for \texttt{blm}
+is much like \texttt{lm}, consisting of \texttt{formula} and
+\texttt{data} arguments.
+
+<<>>=
+Pima.te$diabetes <- ifelse(Pima.te$type=="Yes",1,0)
+
+fit <- blm(diabetes~scale(age)+scale(bmi),Pima.te)
+
+fit
+@ 
+
+The \texttt{scale} function standardizes each continuous
+measure, subtracting each observation by its mean and dividing by
+its standard deviation. For a normally distributed variable, this
+standardization will result in a covariate that is $\sim N(0,1)$; zero corresponds to the mean and one unit change corresponds to a
+standard deviation change from the mean. 
+
+Showing the result of \texttt{fit} returns point estimates, t-values,
+standard errors, 
+and p-values for $\beta$. We find that all of the factors are
+statistically significant. The average age of the Pima Indians in the
+sample cohort was \Sexpr{round(mean(Pima.te$age),1)} years and the
+average BMI was \Sexpr{round(mean(Pima.te$bmi),1)}. The model suggests
+that a female Pima Indian of this age and BMI has a
+\Sexpr{round(coef(fit)[1]*100,1)}\% chance of being
+diabetic. The risk of diabetes for a Pima woman that is a standard
+deviation older than a Pima woman of the same BMI, is increased by an
+absolute risk of 
+\Sexpr{round(coef(fit)[2]*100,1)}\%. The risk difference for diabetes
+between Pima Indians of the same age but who differ by a standard
+deviation in BMI is  \Sexpr{round(coef(fit)[3]*100,1)}\%, with the
+risk increasing with higher BMI.
+
+The log-likelihood, AIC, and degrees of freedom are also reported,
+which can be useful for model comparison. 
+
+For more information about the convergence properties of the fit, we
+use the \texttt{summary} function.
+
+<<>>=
+summary(fit)
+@ 
+
+This returns a list with elements with the following elements. The
+element \texttt{est} are the regression
+coefficients, which could also be obtained by applying
+\texttt{coef}. The element \texttt{gradient} is the first derivative of the objective
+function with respect to $\beta$, where the objective function for
+\texttt{auglag} is the log-likelihood in addition to a first-order
+barrier term  and a second order penalty term of the inequality
+constraints. The gradient should be close to zero at the maximum
+likelihood solutions. But, if the boundary is reached, the gradient
+values could be large.  The element \texttt{feasible} is a logical value
+indicating whether all of the predicted risks in the sample are true
+probabilities. The \texttt{active} element fives the covariate classes
+whose risks are at the boundary of the parameter space. If all
+constraints are inactive then \texttt{active} is \texttt{NULL}. Here,
+we find that there is one active constraint which is associated with
+younger age and low BMI. The exact predicted risk for this subject
+type can be obtained as follows.
+
+<<>>=
+fit@active.constraints$active%*%coef(fit)
+@ 
+
+The element \texttt{convergence} is a numerical value indicating
+whether the algorithm successfully converged. A value of 0 indicates
+success. Any other number indicates a failure to converge and
+\texttt{message} provides some description of the type of failure. 
+
+The
+remaining elements provide some assessments of the model fit. As an
+exact test of the model fit we can use a likelihood ratio test.
+
+<<>>=
+LR <- summary(fit)$null.deviance-2*summary(fit)$loglik
+df <- length(coef(fit))
+1-pchisq(LR,df=df)
+@ 
+
+The global test is highly significant. As a further diagnostic of the model fit, a Hosmer-Lemeshow type test is
+appropriate, given that the model includes continuous covariates.
+
+<<>>=
+gof(fit)
+@ 
+
+There is no evidence that the linear model is a poor fit. To
+investigate this further, a lattice plot of the observed incidence of
+diabetes, binned by BMI and age groups, against the predicted mean
+risk, is useful. Figure~\ref{fig} shows linear risk effects for the
+youngest age groups but there is some discrepancy among the oldest
+Pima Indians.
+
+<<eval=FALSE>>=
+library(lattice)
+
+y <- tapply(Pima.te$diabetes,
+            list(cut(Pima.te$bmi,c(18,25,30,35,40,50)),
+            cut(Pima.te$age,c(20,30,40,50,70))),mean)
+
+pre <- tapply(predict(fit),
+              list(cut(Pima.te$bmi,c(18,25,30,35,40,50)),
+                cut(Pima.te$age,c(20,30,40,50,70))),mean)
+
+plot.data <- data.frame(
+                        obs=as.vector(y),
+                        pre=as.vector(pre),
+                        age=rep(colnames(y),each=5),
+                        bmi=rep(row.names(y),4)
+                        )
+
+xyplot(obs+pre~bmi|age,data=plot.data,auto.key=TRUE,type="b")
+@ 
+
+\begin{center}
+\begin{figure}
+\includegraphics[width=3in]{goodness_of_fit.pdf}
+\label{fig}
+\caption{Graphical inspection of linearity assumption for BLM model \texttt{fit}}
+\end{figure}
+\end{center}
+
+Had the model consisted of only categorical variables, we would assess
+goodness of fit with deviance, Pearson chi-square statistics, and a
+comparison of the observed and expected event counts in each covariate category.
+
+<<>>=
+fit.categorical <- blm(diabetes~I(age>50)+I(bmi>30),Pima.te)
+fit.categorical
+dispersion(fit.categorical)
+@
+
+The \texttt{dispersion} function provides the observed and expected
+events in each covariate class, whose pattern is indicated by the
+binary sequence corresponding to the three parameters of the model:
+intercept, age, BMI. Degrees of freedom and p-values are given for the
+deviance and chi-square statistics.
+
+Returning to our starting model, if we wanted to use an adaptive
+barrier method for the optimization, we would use the \texttt{augmented} argument.
+
+<<>>=
+fit.barrier <- blm(diabetes~scale(age)+scale(bmi),
+                   Pima.te,augmented=FALSE)
+fit.barrier
+@
+
+The point estimates are quite similar but we note that the t-value for
+\texttt{bmi} is nearly twice that of \texttt{fit}, indicating that the
+standard error is $\approx 50\%$ of what was found for the fit with
+the augmented Lagrangian method. 
+
+<<>>=
+sqrt(diag(vcov(fit)))/sqrt(diag(vcov(fit.barrier)))
+@ 
+
+The models differ because they use a different approach to determining
+the covariance-variance matrix of the model estimates. In the
+augmented Lagrangian, the active inequality constraints are
+included in the objective function, its gradient, and Hessian. For the
+barrier method, the standard unconstrained Hessian is used. The models
+will give an equivalent standard error when no constraints are
+active. But when the boundary is hit, the unconstrained Hessian might
+be inaccurate and a warning is thrown to caution users against its
+use.
+
+\section{Linear-Expit (LEXPIT) model}
+
+Suppose we expanded the BLM model to include the effects of plasma
+glucose concentration $>100$ mg/dl.
+
+<<>>=
+fit <- blm(diabetes~scale(age)+scale(bmi)+I(glu>100),Pima.te)
+fit
+summary(fit)
+@ 
+
+The introduction of the additional parameter results in two boundary
+cases and the augmented Lagrangian algorithm failed to
+converge. Although we could consider adjusting the algorithm settings,
+if we are unsure whether linearity applies to all of the risk factors,
+we can fit a more flexible LEXPIT model that allows us to consider a mixture
+of linear and nonlinear effects. 
+
+The LEXPIT model describes the probability of $Y_i = 1$ as a function
+of linear and nonlinear effects, where the nonlinear effects are the
+expit function (the inverse of the logit), $\mbox{expit}(x)=\exp(x)/(1+\exp(x))$. 
+
+\[
+\pi_i = x_i'\beta+\mbox{expit}(z_i'\gamma)
+\]
+
+\noindent The $x_i$ variables are linear effects and $z_i$ are the
+logistic effects. The first component of $z_i$ is an intercept term,
+so that when the remaining components are 0, $\mbox{expit}(\gamma_0)$
+is the baseline risk. As in BLM, $\beta$ represent risk differences
+for unit changes in $x_i$. The coefficients $\gamma$ are odds ratios
+after baseline adjustment for the effects of $x_i'\beta$.
+
+The LEXPIT model provides a more flexible way to estimate risk
+differences since it imposes fewer parameter constraints. This is
+possible because any $z_i'\gamma$ yields a probability measure.
+
+To illustrate the syntax of the \texttt{lexpit} function and its
+potential utility, we fit the expanded model for type II diabetes in Pima Indians with linear effects for age
+and logistic effects for BMI and plasma glucose concentration.
+
+<<>>=
+fit.lexpit <- lexpit(f.linear=diabetes ~ scale(age),f.expit=diabetes~scale(bmi)+I(glu>100),Pima.te)
+fit.lexpit
+summary(fit.lexpit)
+@ 
+
+The LEXPIT model meets the criteria for convergence with only one
+active constraint. Similar methods as shown for BLM are available for
+the \texttt{lexpit} class which provide measures of model fit, methods
+to compute confidence intervals, and make predictions.
+
+<<>>=
+LR <- summary(fit.lexpit)$null.deviance-2*summary(fit.lexpit)$loglik
+df <- length(coef(fit.lexpit))
+1-pchisq(LR,df=df)
+
+gof(fit.lexpit)
+@ 
+
+To estimate a confidence interval for the risk difference associated
+with 2 standard deviation difference in age we could use the
+\texttt{ci} function and specify the vector for the linear effects
+with the argument \texttt{C}.
+
+<<>>=
+ci(fit.lexpit,C=2,baseline=FALSE)
+@ 
+
+The argument \texttt{FALSE} specifies that the expit components are
+not included in the confidence interval determination. If we wanted a
+confidence interval for the absolute risk of diabetes for an Pima
+woman of average age, BMI, and with a plasma glucose $>100$ mg/dl, we
+would specify the expit components as follows.
+
+<<>>=
+diabetic.risk <- ci(fit.lexpit,C=0,C.expit=c(1,0,1))
+diabetic.risk
+@ 
+
+We find that the estimated risk of type II diabetes for a Pima woman
+of this type is \Sexpr{round(diabetic.risk$est*100,1)}\%.
+
+\section{Conclusion}
+
+The \texttt{blm} package provides two models, BLM and LEXPIT, that can
+be used to obtain
+direct estimates of absolute risk and risk differences for
+binary cohort data. The instantiation and methods for the \texttt{blm} and \texttt{lexpit}
+classes are in keeping with other linear models in \texttt{R}. The
+LEXPIT provides additional flexibility that can be useful when
+estimates of the linear model are near the boundary. 
+
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Lange}{Lange}{2010}]{Lange:2010}
+Lange, K. (2010).
+\newblock {\em {Numerical Analysis for Statisticians}}.
+\newblock Springer-Verlag, New York.
+
+\bibitem[\protect\citeauthoryear{Madsen, Nielsen, and Tingleff}{Madsen
+  et~al.}{2004}]{Madsen:2004}
+Madsen, K., Nielsen, H., and Tingleff, O. (2004).
+\newblock {\em {Optimization with constraints}}.
+\newblock IMM, Technical University of Denmark.
+
+
+\bibitem[\protect\citeauthoryear{Varadhan}{Varadhan}{2011}]{Varadhan:2011}
+Varadhan, R. (2011).
+\newblock {\em alabama: Constrained nonlinear optimization}.
+\newblock R package version 2011.3-1.
+
+\end{thebibliography}
+\end{article}
+
+\end{document}
