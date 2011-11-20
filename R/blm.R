@@ -1,4 +1,5 @@
-blm <- function(f,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6,augmented=TRUE,warn=-1,...){
+blm <- function(f,data,par.init,weights=NULL,ineq=NULL,trace=FALSE,tol=1e-6,
+                augmented=TRUE,warn=-1,...){
 
        warn.setting <- getOption("warn")
        options(warn=warn)
@@ -28,13 +29,15 @@ blm <- function(f,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6,augmented=TRUE,wa
         else{
            par.start <- starting.values.blm(f,data,par.init=par.init)
         }
- 
-      LL <- blm.loglik(f,data)
-      score <- blm.dot.loglik(f,data)
-	
 
+      weighted = ifelse(is.null(weights),FALSE,TRUE)
+
+      if(!weighted) weights = rep(1,nrow(data))
+       
+      LL <- blm.loglik(f,data,weights)
+      score <- blm.dot.loglik(f,data,weights)
       constraints <- blm.constraints(f,data,ineq.mat=ineq)
-      
+
       process.start = proc.time()
 
       if(augmented){
@@ -44,22 +47,22 @@ blm <- function(f,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6,augmented=TRUE,wa
           }
         else{
 
-       fit <- constrOptim.nl(par=par.start$par.start,fn=LL,gr=score,										hin=constraints$ineq,hin.jac=constraints$ineq.jac,
+       fit <- constrOptim.nl(par=par.start$par.start,fn=LL,gr=score,									 hin=constraints$ineq,hin.jac=constraints$ineq.jac,
                                      control.outer=list(trace=trace,...))
         }
 
       run.time = proc.time()-process.start
       run.time = as.numeric(run.time)[3]
-        
-      if(is.null(ineq)) ineq = matrix()
+      fit$par <- matrix(fit$par,ncol=1)
+      rownames(fit$par) <- par.start$names
 
-      
 		blm.object <- new("blm",
 					  fit = fit,
 					  par.start = par.start,
 					  f.loglik = LL,
 					  f.score = score,
-					  run.time = run.time,
+                                          weights = weights,
+                                          run.time = run.time,
 					  data = data,
 					  formula = f,
 					  constraints = constraints,
@@ -70,7 +73,7 @@ blm <- function(f,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6,augmented=TRUE,wa
                                           V = matrix()
 					  )
 
-          
+             
        if(augmented){
           H = -fit$hessian
           blm.object@active.constraints = check.auglag.blm.active.constraints(blm.object)
@@ -85,7 +88,12 @@ blm <- function(f,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6,augmented=TRUE,wa
           blm.object@H = H
           blm.object@V = V
 
-         options(warn=warn.setting)
+       if(weighted){    #SANDWHICH ESTIMATOR
+         S <- weighted.vcov.blm(blm.object)
+         blm.object@V = V%*%S%*%V
+       }
+       
+       options(warn=warn.setting)
 
         if(!augmented&!is.null(blm.object@active.constraints)){
           warning("\nEstimates at the boundary and augmented Lagrangian not used.\nStandard errors might be inaccurate.",immediate.=TRUE,call.=FALSE)

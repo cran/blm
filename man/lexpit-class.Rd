@@ -17,6 +17,7 @@ Objects can be created by calls of the form \code{new("lexpit", ...)}.
     \item{\code{par.start}:}{List of \code{par.start} and \code{not.feasible}.}
     \item{\code{f.loglik}:}{Function, LEXPIT log-likelihood (objective function of optimization) that takes single argument that is the vector of model parameters.}
     \item{\code{f.score}:}{Function, LEXPIT score (first derivative of log-likelihood) that takes single argument that is the vector of model parameters.}
+    \item{\code{weights}:}{Vector of weights equal to the number of observations. Weights are applied to each observation's contribution to the estimating equations.}
     \item{\code{run.time}:}{Numeric, elapsed time of maximization in seconds.}
     \item{\code{data}:}{Data frame containing the outcomes and explanatory variables.}
     \item{\code{formula.linear}:}{Model formula for linear effects.}

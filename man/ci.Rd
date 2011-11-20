@@ -12,20 +12,27 @@ Computes a confidence interval for the specified linear combination of the regre
 
 }
 
-\section{Methods}{
+\section{Methods}{object,C,alpha=.05,
+                   sig=4,
+                   method=c("hessian","subsample","logit"),...),
+                  
 \describe{
 
-  \item{ci}{\code{signature(object = "blm",C="numeric",alpha=0.05,sig=4,...)}:
-Computes an estimate and confidence interval for given linear combination of the model parameters specified by \code{C}.
+  \item{ci}{\code{signature(object = "blm",C="numeric",alpha=0.05,sig=4,method=c("hessian","subsample","logit"),...)}:
+Computes an estimate and confidence interval for given linear combination of the model parameters specified by \code{C}. The \code{method} specifies the type of confidence interval to be computed: a large-sample normal (\code{hessian}), a subsampler (\code{subsample}), or a logit-transform based CI.
   }
 
-  \item{ci}{\code{signature(object = "lexpit",C="numeric",alpha=0.05,sig=4,baseline=TRUE,C.expit,var=NULL,...)}:
-Computes an estimate and confidence interval for given linear combination of the model parameters specified by \code{C}. If \code{baseline} is included, then the vector \code{C.expit} supplies the values for the expit components, including the intercept. The argument \code{var} is a user-supplied variance-covariance matrix, where the order has the linear parameters followed by the expit parameters. 
+  \item{ci}{\code{signature(object = "lexpit",C="numeric",alpha=0.05,sig=4,method=c("hessian","subsample","logit"),...)}:
+Computes an estimate and confidence interval for given linear combination of the model parameters specified by \code{C}, al list of \code{linear} and \code{expit} components.
   }
 
+Additional arguments \code{...} are passed to \code{ci.blm} or \code{ci.logit.transform} depending on the selected method.
  }
 }
 
+\seealso{
+\code{\link{subresample}},\code{\link{ci.blm}},\code{\link{ci.logit.transform}}
+}
 
 \author{S. Kovalchik \email{s.a.kovalchik@gmail.com}}
 
@@ -40,7 +47,7 @@ fit <- blm(low~smoke+I(scale(age)),data=birthwt)
 
 # ESTIMATE RISK DIFFERENCE ASSOCIATED WITH SMOKING
 
-ci(fit,c(0,1,0))
+ci(fit,c(0,1,0),method="hessian")
 
 }
 

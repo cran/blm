@@ -6,18 +6,19 @@
 
 \description{
 
-Binomial linear model for cohort binary data. 
+Binomial linear model for regression with observational data and a binary reponse outcome. 
 
 }
 
 \usage{
-blm(f,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6,augmented=TRUE,warn=-1,...)
+blm(f,data,par.init,weights=NULL,ineq=NULL,trace=FALSE,tol=1e-6,augmented=TRUE,warn=-1,...)
 }
 
 \arguments{
   \item{f}{formula for linear model for binary outcome, \code{event~x1+x2+...}}
   \item{data}{data.frame containing the variables of \code{f}}
   \item{par.init}{optional vector of user-specified initial parameters}
+    \item{weights}{Vector of weights equal to the number of observations. Weights can be used to estimate population statistics from survey or case-control data.}
   \item{ineq}{optional user-specified inequality constraint matrix.}
 \item{trace}{logical, whether details of optimization should be printed with each outer iteration.}
 \item{tol}{numeric criterion for judging a constraint active when \code{augmented} is \code{FALSE}.}
@@ -83,5 +84,9 @@ summary(fit)$AIC-summary(fit2)$AIC
 fit2 <- blm(admit~I(scale(gre))+I(scale(gpa))+factor(rank),grad,augmented=FALSE)
 
 fit2
+
+## INTERCEPT CI USING LOGIT-TRANSFORM METHOD
+
+ci(fit2,c(1,0,0,0,0,0),coef=TRUE,method="logit",average=c(FALSE,rep(TRUE,5)))
 
 }

@@ -1,4 +1,4 @@
-lexpit <- function(f.linear,f.expit,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6,augmented=TRUE,warn=-1,...){
+lexpit <- function(f.linear,f.expit,data,par.init,weights=NULL,ineq=NULL,trace=FALSE,tol=1e-6,augmented=TRUE,warn=-1,...){
 
        warn.setting <- getOption("warn")
        options(warn=warn)
@@ -32,18 +32,22 @@ lexpit <- function(f.linear,f.expit,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6
             par.start <- starting.values.lexpit(f.linear,f.expit,data,par.init=par.init)
          }
 
+      weighted = ifelse(is.null(weights),FALSE,TRUE)
+      if(!weighted) weights = rep(1,nrow(data))
+       
 
-   LL <- lexpit.loglik(f.linear,f.expit,data)
-   score <- lexpit.dot.loglik(f.linear,f.expit,data)
+   LL <- lexpit.loglik(f.linear,f.expit,data,w=weights)
+   score <- lexpit.dot.loglik(f.linear,f.expit,data,w=weights)
 
    constraints <- lexpit.constraints(f.linear,f.expit,data,ineq.mat=ineq)
-       
+
    process.start = proc.time()
 
       if(augmented){
         
         fit <- auglag(par=par.start$par.start,fn=LL,gr=score,										hin=constraints$ineq,hin.jac=constraints$ineq.jac,
-                                     control.outer=list(trace=trace,...))
+                                    control.outer=list(trace=trace,...))
+      
           }
         else{
 
@@ -61,6 +65,7 @@ lexpit <- function(f.linear,f.expit,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6
 					  par.start = par.start,
 					  f.loglik = LL,
 					  f.score = score,
+                                          weights = weights,
 					  run.time = run.time,
 					  data = data,
 					  formula.linear = f.linear,
@@ -86,7 +91,12 @@ lexpit <- function(f.linear,f.expit,data,par.init,ineq=NULL,trace=FALSE,tol=1e-6
 
           lexpit.object@H = H
           lexpit.object@V = V
-                
+
+       if(weighted){    #SANDWHICH ESTIMATOR
+         S <- weighted.vcov.lexpit(lexpit.object)
+         lexpit.object@V = V%*%S%*%V
+        }
+       
         options(warn=warn.setting)
 
         if(!augmented&!is.null(lexpit.object@active.constraints)){

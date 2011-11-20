@@ -6,12 +6,12 @@
 
 \description{
 
-A direct probability model for binary data from a prospective cohort study. Covariate effects are the sum of additive terms and an expit term, which allows for some vectors to be additive and others non-linear.
+A direct probability model for regression with a binary outcome from observational data. Covariate effects are the sum of additive terms and an expit term, which allows for some vectors to be additive and others non-linear.
 
 }
 
 \usage{
-lexpit(f.linear,f.expit,data,par.init,ineq=NULL,trace=FALSE,
+lexpit(f.linear,f.expit,data,par.init,weights=NULL,ineq=NULL,trace=FALSE,
 	tol=1e-6,augmented=TRUE,warn=-1,...)
 }
 
@@ -20,6 +20,7 @@ lexpit(f.linear,f.expit,data,par.init,ineq=NULL,trace=FALSE,
   \item{f.expit}{formula for expit model, linear in expit, \code{event~z1+z2+...}}
   \item{data}{data.frame containing the variables of \code{f.linear} and \code{f.expit}}
   \item{par.init}{List of \code{linear} and \code{expit} logical or numeric.}
+    \item{weights}{Vector of weights equal to the number of observations. Weights can be used to estimate population statistics from survey or case-control data.}
   \item{ineq}{optional user-specified inequality constraint matrix.}
 \item{trace}{logical, whether optimization details at each outer iteration should be printed.}
 \item{tol}{numeric criterion for judging a constraint active when \code{augmented} is \code{FALSE}.}
@@ -70,7 +71,11 @@ summary(fit)
 # PROB ADMISSION FOR GRE 2 SD ABOVE AVERAGE
 # ADJUSTED FOR MOST PRESTIGIOUS UNDERGRAD SCHOOL
 
-ci(fit,C=2,baseline=TRUE,C.expit=c(1,0,0,0)) 
+is.constrained(fit)
+
+ci(fit,C=list(linear=2,expit=c(1,0,0,0)),coef=FALSE,
+	average=list(linear=FALSE,expit=c(FALSE,FALSE,FALSE,FALSE)),
+	method="logit") 
 
 
 ### USER-SUPPLIED INITIAL VALUES

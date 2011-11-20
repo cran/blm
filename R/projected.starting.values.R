@@ -1,159 +1,87 @@
 starting.values.lexpit <- function(f.linear,f.expit,data,par.init)
 {
 
+        
      	X <- model.matrix(f.linear,data)
-	Z <- model.matrix(f.expit,data)
-        
         X.names <- colnames(X)
-        Z.names <- colnames(Z)
-        
-        int = attr(terms(f.linear),"intercept")
-        
-	if(!int){
-            if(!is.matrix(X)) X = matrix(X,ncol=1)
-            X = cbind(rep(1,nrow(Z)),X)
-          }
-        else{
+
+        if(all(X[,1]==1)){
+          X = X[,-1] #REMOVE INTERCEPT TERM
           X.names = X.names[-1]
         }
+        if(!is.matrix(X)) X = matrix(X,ncol=1)     
+	Z <- model.matrix(f.expit,data)
+        Z.names <- colnames(Z)
         
-        p = ncol(X)-1
+        p = ncol(X)
         q = ncol(Z)
-        A = lexpit.ineq.matrix(f.linear,data)
-	A = unique(A)
-        
-     if(!missing(par.init)){
-            beta <- par.init$linear
-            gamma <- par.init$expit
-            pi.gamma <- expit(gamma[1])
+        not.feasible <- FALSE
+                  
+         if(!missing(par.init)){
+           beta = matrix(par.init$linear,ncol=1)
+           gamma = matrix(par.init$expit,ncol=1)
+           not.feasible = any((X%*%beta+expit(Z%*%gamma)<=0)|(X%*%beta+expit(Z%*%gamma)>=1))
+           }
 
-       	not.feasible = any((A%*%beta<=-pi.gamma)|(A%*%beta>=1-pi.gamma))
+         if(missing(par.init)|not.feasible){
+           if(not.feasible){
+             warning("Initial values not feasible. Selecting alternative.")
+           }
 
-	if(not.feasible){
-             warning("Initial values were not within feasible region. Feasible starting values selected.")
-            }
-          }
-
-          f = update(f.linear,~.+1)
-          blm.start <- starting.values.blm(f,data)
-          beta <- blm.start$par.start[-1]
-          gamma <- c(log(blm.start$par.start[1]/(1-blm.start$par.start[1])),rep(0,q-1))
-          pi.gamma <- expit(gamma[1])
-           
-          not.feasible = any((A%*%beta<=-pi.gamma)|(A%*%beta>=1-pi.gamma))
- 
-          names(beta) <- X.names
-          names(gamma) <- Z.names
-        
-   return(list(par.start=c(beta,gamma),
+            gamma <- coef(glm(f.expit,data,family="binomial"))
+            pre <- expit(Z%*%gamma)
+            Y <- model.matrix(f.linear,data)[,1]-pre
+            beta <- coef(glm(f.linear,data,family="gaussian"))
+            if(length(beta)>p) beta = beta[-1]
+            not.feasible = any((X%*%beta+expit(Z%*%gamma)<=0)|(X%*%beta+expit(Z%*%gamma)>=1))
+          
+           while(not.feasible){
+             beta = beta*runif(1,.9,1)
+             not.feasible = any((X%*%beta+expit(Z%*%gamma)<=0)|(X%*%beta+expit(Z%*%gamma)>=1))
+           }
+         }
+         
+              return(list(par.start=c(beta,gamma),
                names = c(X.names,Z.names),
                not.feasible=not.feasible))
-}
 
+}
 
 starting.values.blm <- function(f,data,par.init)
 {
 
-	X <- model.matrix(f,data)
-        X.names <- colnames(X)
-        if(!is.matrix(X)) X = matrix(X,ncol=1)
-        
-        A <- blm.ineq.matrix(f,data)
-  
-	Y <- model.frame(f,data)[,1]
+         X <- model.matrix(f,data)
+         p <- ncol(X)
+         if(!is.matrix(X)) X <- matrix(X,ncol=1)
 
-        beta <- solve(t(X)%*%X)%*%t(X)%*%Y
-
+         A <- unique(X)
+         not.feasible <- FALSE
+                  
          if(!missing(par.init)){
            beta = matrix(par.init,ncol=1)
-           rownames(beta) = X.names
-         }
-
-        A = unique(A)
-        
-	not.feasible = any((A%*%beta<=0)|(A%*%beta>=1))
-
-	 if(not.feasible){
-	   if(!missing(par.init)){
-             warning("Initial values were not within feasible region. Feasible starting values selected.")
-             beta <- solve(t(X)%*%X)%*%t(X)%*%Y
-           }
-           
-           Amat = rbind(rbind(X,A),-rbind(X,A))
-           min <- abs(min(rbind(A,X)%*%beta))
-           B = rep(c(min,-1+min),each=(nrow(A)+nrow(X)))
-        
-           beta <- projectLinear(beta,Amat,B,0)
            not.feasible = any((A%*%beta<=0)|(A%*%beta>=1))
-        }
-
-	 return(list(par.start=beta,
-                    names=X.names,
-                    not.feasible=not.feasible
-                    ))
-}
-
-
-starting.values.lexpit.old <- function(f.linear,f.expit,data,par.init)
-{
-	
-	X <- model.matrix(f.linear,data)
-	Y <- model.frame(f.linear,data)[,1]
-	Z <- model.matrix(f.expit,data)
-        
-        X.names <- colnames(X)
-        Z.names <- colnames(Z)
-        
-        int = attr(terms(f.linear),"intercept")
-        
-	if(!int){
-            if(!is.matrix(X)) X = matrix(X,ncol=1)
-            X = cbind(rep(1,length(Y)),X)
-          }
-        else{
-          X.names = X.names[-1]
-        }
-        
-        p = ncol(X)-1
-        q = ncol(Z)
-        
-
-        beta <- solve(t(X)%*%X)%*%t(X)%*%Y
-        gamma <- c(log(mean(Y)/(1-mean(Y))),rep(0,q-1))
-      	pi.gamma <- expit(gamma[1])
-	    
-        beta = beta[-1]
-	X <- X[,-1]
-	if(p==1) X = matrix(X,ncol=1)
-				
-        if(!missing(par.init)){
-            beta <- par.init$linear
-            gamma <- par.init$expit
-            names(beta) <- X.names
-            names(gamma) <- Z.names
-         }
-	
-	A = lexpit.ineq.matrix(f.linear,data)
-	A = rbind(X,A)
-	A = unique(A)
-
-	not.feasible = any((A%*%beta<=-pi.gamma)|(A%*%beta>=1-pi.gamma))
-
-	if(not.feasible){
-	   if(!missing(par.init)){
-             warning("Initial values were not within feasible region. Feasible starting values selected.")
-             beta <- rep(0,length(beta))
            }
+
+         if(missing(par.init)|not.feasible){
+           if(not.feasible){
+             warning("Initial values not feasible. Selecting alternative.")
+           }
+
+            beta <- coef(lm(f,data))
+       	    not.feasible = any((A%*%beta<=0)|(A%*%beta>=1))
+            
+            if(not.feasible){
+              if(beta[1]<=0|beta[1]>=1) beta[1] = coef(lm(update(f,.~1),data))
+            }
            
-           Amat = rbind(A,-A)
-           min = 1/1000
-           B = rep(c(min-pi.gamma,-1+min+pi.gamma),each=nrow(A))
-        
-           beta <- projectLinear(beta,Amat,B,0)
-           not.feasible = any((A%*%beta<=-pi.gamma)|(A%*%beta>=1-pi.gamma))
- 		}
-  				    
-   return(list(par.start=c(beta,gamma),
-               names = c(X.names,Z.names),
-               not.feasible=not.feasible))
+           while(not.feasible){
+             beta[2:p] = beta[2:p]*runif(1,.9,1)
+             not.feasible = any((A%*%beta<=0)|(A%*%beta>=1))
+           }
+         }
+         
+	 return(list(par.start=beta,
+                     names=colnames(A),
+                     not.feasible=not.feasible
+                    ))
 }

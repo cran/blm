@@ -19,7 +19,7 @@ Computes vector of risk predictions for the dataset used to fit the model.
 Risk predictions for fit design matrix. 
   }
 
- \item{predict}{\code{signature(object = "lexpit",groups=10)}:
+ \item{predict}{\code{signature(object = "lexpit")}:
 Risk predictions for fit design matrix. 
   }
 

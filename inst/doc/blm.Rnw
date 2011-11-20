@@ -19,7 +19,7 @@
 \abstract{
   
   The \texttt{blm} package provides functions for fitting flexible binomial
-  models for cohort data with a binary outcome. The binomial
+  models for epidemiological data with a binary outcome. The binomial
   linear model (BLM) is a strictly linear model. The linear-expit
   (LEXPIT) model allows risk to be expressed as a function of linear and nonlinear
   effects, where nonlinear effects take the form of the inverse logit
@@ -50,7 +50,7 @@ be a valid risk, $\tilde{x}'\beta \in (0,1)$. In general, we might not
 be able to specify all of the possible $\tilde{x}$ of our
 population. Instead, we make use of the $x_i$ from our sample and
 require that all $x_i'\beta \in (0,1)$. Thus, the set of
-covariate patterns of the sample cohort defines the \emph{feasible region}
+covariate patterns of the study sample defines the \emph{feasible region}
 for $\beta$. To ensure that the estimates for $\beta$ are within the
 region of feasibility, constrained maximum likelihood is used. The
 default algorithm employed is an augmented Lagrangian method \citep{Madsen:2004}
@@ -108,7 +108,7 @@ Showing the result of \texttt{fit} returns point estimates, t-values,
 standard errors, 
 and p-values for $\beta$. We find that all of the factors are
 statistically significant. The average age of the Pima Indians in the
-sample cohort was \Sexpr{round(mean(Pima.te$age),1)} years and the
+study sample was \Sexpr{round(mean(Pima.te$age),1)} years and the
 average BMI was \Sexpr{round(mean(Pima.te$bmi),1)}. The model suggests
 that a female Pima Indian of this age and BMI has a
 \Sexpr{round(coef(fit)[1]*100,1)}\% chance of being
@@ -145,11 +145,11 @@ probabilities. The \texttt{active} element fives the covariate classes
 whose risks are at the boundary of the parameter space. If all
 constraints are inactive then \texttt{active} is \texttt{NULL}. Here,
 we find that there is one active constraint which is associated with
-younger age and low BMI. The exact predicted risk for this subject
-type can be obtained as follows.
+younger age and low BMI. This could have also been identified with the following methods.
 
 <<>>=
-fit@active.constraints$active%*%coef(fit)
+is.constrained(fit)
+which.constrained(fit)
 @ 
 
 The element \texttt{convergence} is a numerical value indicating
@@ -171,56 +171,51 @@ The global test is highly significant. As a further diagnostic of the model fit,
 appropriate, given that the model includes continuous covariates.
 
 <<>>=
-gof(fit)
+hosmerlem(Pima.te$diabetes,predict(fit))
 @ 
 
 There is no evidence that the linear model is a poor fit. To
-investigate this further, a lattice plot of the observed incidence of
-diabetes, binned by BMI and age groups, against the predicted mean
-risk, is useful. Figure~\ref{fig} shows linear risk effects for the
-youngest age groups but there is some discrepancy among the oldest
-Pima Indians.
+investigate this visually, predictiveness plot can be produced from the \code{blm} plot method (FIgure~\ref{fig}). This plots the estimated risk of the full study sample against the risk percentile. The observed proportions at each decile midpoint are overlaid.
+
 
 <<eval=FALSE>>=
-library(lattice)
-
-y <- tapply(Pima.te$diabetes,
-            list(cut(Pima.te$bmi,c(18,25,30,35,40,50)),
-            cut(Pima.te$age,c(20,30,40,50,70))),mean)
-
-pre <- tapply(predict(fit),
-              list(cut(Pima.te$bmi,c(18,25,30,35,40,50)),
-                cut(Pima.te$age,c(20,30,40,50,70))),mean)
-
-plot.data <- data.frame(
-                        obs=as.vector(y),
-                        pre=as.vector(pre),
-                        age=rep(colnames(y),each=5),
-                        bmi=rep(row.names(y),4)
-                        )
-
-xyplot(obs+pre~bmi|age,data=plot.data,auto.key=TRUE,type="b")
+plot(fit)
 @ 
 
 \begin{center}
 \begin{figure}
 \includegraphics[width=3in]{goodness_of_fit.pdf}
 \label{fig}
-\caption{Graphical inspection of linearity assumption for BLM model \texttt{fit}}
+\caption{Predictiveness curve  for BLM model \texttt{fit}}
 \end{figure}
 \end{center}
 
 Had the model consisted of only categorical variables, we would assess
 goodness of fit with deviance, Pearson chi-square statistics, and a
-comparison of the observed and expected event counts in each covariate category.
+comparison of the observed and expected event counts in each covariate category using the method \texttt{gof}.
 
 <<>>=
 fit.categorical <- blm(diabetes~I(age>50)+I(bmi>30),Pima.te)
 fit.categorical
-dispersion(fit.categorical)
+gof(fit.categorical)
+@ 
+
+\noindent This information can also be represented as a graph when the \texttt{plot} method is applied (FIgure~\ref{fig2}).
+
+<<eval=FALSE>>=
+plot(fit.categorical)
 @
 
-The \texttt{dispersion} function provides the observed and expected
+\begin{center}
+\begin{figure}
+\includegraphics[width=3in]{goodness_of_fit2.pdf}
+\label{fig2}
+\caption{Graphical inspection of goofness-of-fit for BLM model \texttt{fit.categorical}}
+\end{figure}
+\end{center}
+
+
+The \texttt{gof} function provides the observed and expected
 events in each covariate class, whose pattern is indicated by the
 binary sequence corresponding to the three parameters of the model:
 intercept, age, BMI. Degrees of freedom and p-values are given for the
@@ -320,29 +315,29 @@ with 2 standard deviation difference in age we could use the
 with the argument \texttt{C}.
 
 <<>>=
-ci(fit.lexpit,C=2,baseline=FALSE)
+ci(fit.lexpit,C=list(linear=2,expit=c(1,0,0)),method="subsample",
+   n.boot=100)
 @ 
 
-The argument \texttt{FALSE} specifies that the expit components are
-not included in the confidence interval determination. If we wanted a
+The argument \texttt{method} specifies the type of CI to construct, choosing from a large-sample normal aproach (\texttt{hessian}), a resampling method using a subsample of \texttt{n} (\texttt{subsample}), or a logit0transform method (\texttt{logit}).  If we wanted a
 confidence interval for the absolute risk of diabetes for an Pima
 woman of average age, BMI, and with a plasma glucose $>100$ mg/dl, we
 would specify the expit components as follows.
 
 <<>>=
-diabetic.risk <- ci(fit.lexpit,C=0,C.expit=c(1,0,1))
-diabetic.risk
+ci(fit.lexpit,C=list(linear=0,expit=c(1,0,1)),coef=FALSE,
+   method="logit",average=list(linear=FALSE,expit=rep(FALSE,3)))
 @ 
 
 We find that the estimated risk of type II diabetes for a Pima woman
-of this type is \Sexpr{round(diabetic.risk$est*100,1)}\%.
+of this type is $\approx$40\%.
 
 \section{Conclusion}
 
 The \texttt{blm} package provides two models, BLM and LEXPIT, that can
 be used to obtain
 direct estimates of absolute risk and risk differences for
-binary cohort data. The instantiation and methods for the \texttt{blm} and \texttt{lexpit}
+binary data obtained from observational study designs. The instantiation and methods for the \texttt{blm} and \texttt{lexpit}
 classes are in keeping with other linear models in \texttt{R}. The
 LEXPIT provides additional flexibility that can be useful when
 estimates of the linear model are near the boundary. 

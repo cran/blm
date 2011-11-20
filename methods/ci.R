@@ -63,6 +63,5 @@ ci.lexpit <- function(object,C,alpha=.05,sig=4,baseline=TRUE,C.expit,var=NULL){
 }
 
 setGeneric("ci",function(object,...){standardGeneric("ci")})
-
 setMethod("ci","blm",ci.blm)
 setMethod("ci","lexpit",ci.lexpit)

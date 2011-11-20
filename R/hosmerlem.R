@@ -1,23 +1,27 @@
-hosmerlem = function(f,fit,data,groups=10) {
-
-  X <- model.matrix(f,data)
-  Y <- model.frame(f,data)[,1]
-
-  predicted <- fitted(fit)
-  o <- order(predicted)
+hosmerlem = function(y,predicted,groups=10,plot=FALSE,risk.labels=TRUE,sig=3,...) {
   
-  group <- sort(rep(1:groups,length=length(predicted)))
+  group <- cut(predicted,breaks=quantile(predicted,prob=seq(0,1,1/groups)),include.low=T)
   
-  Y <- Y[o]
-  predicted <- predicted[o]
+  O = tapply(y,group,sum)
+  E = tapply(predicted,group,sum)
 
-  obs = xtabs(cbind(1 - Y, Y) ~ group)
-
-  expect = xtabs(cbind(1 - predicted, predicted) ~ group)
-
-  chisq = sum((obs - expect)^2/expect)
+  chisq = sum((O - E)^2/E)
 
   P = 1 - pchisq(chisq, groups - 2)
 
-  return(list(chisq=chisq,p.value=P))
+  if(plot){
+
+    midpoints <- quantile(predicted,seq(0+(1/(2*groups)),1-(1/(2*groups)),length=groups))
+
+    plot(y=O,x=E,ylab="Observed",xlab="Expected",pch=19)
+
+    if(risk.labels){
+      text(y=O,x=E,labels=round(midpoints,sig),...)
+   }
+
+
+    abline(a=0,b=1)
+    }
+    
+  return(list(chisq=chisq,p.value=P,O=O,E=E,group=table(group)))
 }

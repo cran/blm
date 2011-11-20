@@ -1,6 +1,6 @@
 # NEGATIVE OF LIKELIHOOD EQUATIONS FOR MINIMIZATION OPTIMIZER
 
-blm.loglik <- function(f,data){
+blm.loglik <- function(f,data,w){
 
         X <- model.matrix(f,data)
         Y <- model.frame(f,data)[,1]
@@ -9,8 +9,8 @@ blm.loglik <- function(f,data){
           
 	x.b = X%*%beta
 
-	ll1 <- sum(Y*(log(x.b)-log(1-x.b)))
-	ll2 <- sum(log(1-x.b))
+	ll1 <- sum(w*Y*(log(x.b)-log(1-x.b)))
+	ll2 <- sum(w*log(1-x.b))
 
 	-(ll1+ll2)
       }
@@ -19,7 +19,7 @@ blm.loglik <- function(f,data){
 }
 
 
-blm.dot.loglik <- function(f,data){
+blm.dot.loglik <- function(f,data,w){
 
         X <- model.matrix(f,data)
         Y <- model.frame(f,data)[,1]
@@ -28,7 +28,7 @@ blm.dot.loglik <- function(f,data){
 	x.b = X%*%beta
 
 	g <- sapply(1:ncol(X),function(x){
-	  sum(Y*X[,x]/(x.b))-sum((1-Y)*X[,x]/(1-x.b))
+	  sum(w*Y*X[,x]/(x.b))-sum(w*(1-Y)*X[,x]/(1-x.b))
 	})
 
 	-g
@@ -37,15 +37,15 @@ blm.dot.loglik <- function(f,data){
         dot.LL
 }
 
-lexpit.loglik <- function(f.linear,f.expit,data){
+lexpit.loglik <- function(f.linear,f.expit,data,w){
 
-        X <- model.matrix(f.linear,data)
+	X <- model.matrix(f.linear,data)
+        if(all(X[,1]==1)) X = X[,-1] #REMOVE INTERCEPT TERM
+        if(!is.matrix(X)) X = matrix(X,ncol=1)     
         Y <- model.frame(f.linear,data)[,1]
         Z <- model.matrix(f.expit,data)
 
-        if(attr(terms(f.linear),"int")) X = X[,-1]
-        p = ifelse(is.matrix(X),ncol(X),1)
-        X = matrix(X,ncol=p)
+        p = ncol(X)
         q = ncol(Z)
 
         
@@ -56,8 +56,8 @@ lexpit.loglik <- function(f.linear,f.expit,data){
 
  	pi = X%*%beta+expit(Z%*%gamma)
 
-	ll1 <- sum(Y*(log(pi)-log(1-pi)))
-	ll2 <- sum(log(1-pi))
+	ll1 <- sum(w*Y*(log(pi)-log(1-pi)))
+	ll2 <- sum(w*log(1-pi))
 
 	-(ll1+ll2)
 
@@ -66,15 +66,15 @@ lexpit.loglik <- function(f.linear,f.expit,data){
         LL
 }
 
-lexpit.dot.loglik <- function(f.linear,f.expit,data){
+lexpit.dot.loglik <- function(f.linear,f.expit,data,w){
 
-        X <- model.matrix(f.linear,data)
+  	X <- model.matrix(f.linear,data)
+        if(all(X[,1]==1)) X = X[,-1] #REMOVE INTERCEPT TERM
+        if(!is.matrix(X)) X = matrix(X,ncol=1)     
         Y <- model.frame(f.linear,data)[,1]
         Z <- model.matrix(f.expit,data)
 
-        if(attr(terms(f.linear),"int")) X = X[,-1]
-        p = ifelse(is.matrix(X),ncol(X),1)
-        X = matrix(X,ncol=p)
+        p = ncol(X)
         q = ncol(Z)
         
         dot.LL <- function(par){
@@ -87,11 +87,11 @@ lexpit.dot.loglik <- function(f.linear,f.expit,data){
 	      pi = X%*%beta+expit(Z%*%gamma)
 
 	g.beta <- sapply(1:ncol(X),function(x){
-	  sum(Y*X[,x]/(pi))-sum((1-Y)*X[,x]/(1-pi))
+	  sum(w*Y*X[,x]/(pi))-sum(w*(1-Y)*X[,x]/(1-pi))
 	})
 
   	g.gamma <- sapply(1:ncol(Z),function(x){
-	  sum(Y*Z[,x]*dot.expit(Z%*%gamma)/(pi))-sum((1-Y)*Z[,x]*dot.expit(Z%*%gamma)/(1-pi))
+	  sum(w*Y*Z[,x]*dot.expit(Z%*%gamma)/(pi))-sum(w*(1-Y)*Z[,x]*dot.expit(Z%*%gamma)/(1-pi))
 	})
   
         -c(g.beta,g.gamma)

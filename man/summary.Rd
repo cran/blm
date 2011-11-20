@@ -33,7 +33,12 @@ The list returned has the named components:
 \item{loglik}{numeric log-likelihood at final model estimates}
 \item{df}{degrees of freedom}
 \item{null.deviance}{deviance, twice the negative of an intercept-only fit}
-\item{second.to.run}{user elapsed seconds to fit model}
+\item{R2.efron}{Efron's (1978) pseudo R-squared}
+\item{R2.mcfadden}{McFadden's (1974) pseudo R-squared}
+\item{R2.mcfadden.adj}{McFadden's adjusted pseudo R-squared}
+\item{R2.coxsnell}{Cox and Snell's (1989) pseudo R-squared}
+\item{R2.coxsnell.adj}{Cox and Snell's adjusted R-squared}
+\item{seconds.to.run}{user elapsed seconds to fit model}
  }
 }
 
@@ -45,6 +50,15 @@ An inequality constraint is declared active if, at the final estimates of the al
 }
 
 \seealso{For further details on convergence report \code{\link{constrOptim.nl}}}
+
+\references{
+
+Cox, D. R. & Snell, E. J. (1989). \emph{The Analysis of Binary Data}, Second Edition, London: Chapman and Hall.
+
+Efron, B. (1978), Regression and ANOVA with zero-one data: measures of residual variation, \emph{Journal of the American Statistical Association} 73, 113-121.
+
+McFadden, D. (1974), Conditional logit analysis of qualitative choice behaviour, in: P. Zarembka (ed.), \emph{Frontiers in Econometrics}, Academic Press, New York, 105-142.
+}
 
 \examples{
 

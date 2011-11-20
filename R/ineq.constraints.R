@@ -27,9 +27,8 @@ blm.constraints <- function(f,data,ineq.mat=NULL){
 lexpit.ineq.matrix <- function(f,data){
 		
         A <- model.matrix(f,data)
-        
-        if(attr(terms(f),"int")) A = A[,-1]
-        if(!is.matrix(A)) A = matrix(A,ncol=1)
+        if(all(A[,1]==1)) A = A[,-1] #REMOVE INTERCEPT TERM
+        if(!is.matrix(A)) A = matrix(A,ncol=1)     
    A
 }
 
@@ -44,6 +43,7 @@ lexpit.constraints <- function(f.linear,f.expit,data,ineq.mat=NULL){
   if(is.null(ineq.mat)){
     
     U <- cbind(A,B) #REDUCE TO UNIQUE COVARIATE CLASSES
+    U <- unique(U)
     
     ineq.mat = list(
       A = matrix(U[,1:p],ncol=p),
@@ -77,6 +77,9 @@ lexpit.constraints <- function(f.linear,f.expit,data,ineq.mat=NULL){
      cbind(beta.jac,gamma.jac)    
   }
 
+  #ineq.mat is the matrix used to construct the system of constraints
+  #ineq and ineq.jac are functions to apply to optimization
+    
   return(list(ineq.mat=ineq.mat,ineq=ineq,ineq.jac=ineq.jac))
 
 }

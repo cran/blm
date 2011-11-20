@@ -7,6 +7,21 @@ export(blm,
        logistic.dispersion,
        logistic.baseline,
        blm.rr)
-importFrom(stats,coef,vcov)
+importFrom(stats,coef,vcov,predict,resid,influence)
+importFrom(graphics,plot)
 exportClasses(blm,lexpit)
-exportMethods(summary,print,show,coef,vcov,vcovBoot,gof,ci,predict,dispersion)
+exportMethods(summary,
+              print,
+              show,
+              coef,
+              vcov,
+              subresample,
+              predict,
+              resid,
+              gof,
+              ci,ci.blm,ci.logit.transform,
+              EO,
+              which.constrained,
+              is.constrained,
+              influence,
+              plot)

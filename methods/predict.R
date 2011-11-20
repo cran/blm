@@ -1,4 +1,4 @@
-predict.blm <- function(object){
+predict.blm <- function(object,...){
 
   X <- model.matrix(object@formula,object@data)
   Y <- model.frame(object@formula,object@data)[,1]
@@ -8,7 +8,7 @@ predict.blm <- function(object){
   X%*%object@fit$par
 }
 
-predict.lexpit <- function(object){
+predict.lexpit <- function(object,...){
 
   X <- model.matrix(object@formula.linear,object@data)
   Y <- model.frame(object@formula.linear,object@data)[,1]
@@ -24,7 +24,5 @@ predict.lexpit <- function(object){
   X%*%beta+expit(Z%*%gamma)
 }
 
-setGeneric("predict",function(object){standardGeneric("predict")})
-
-setMethod("predict","blm",predict.blm)
-setMethod("predict","lexpit",predict.lexpit)
+setMethod("predict",signature(object="blm"),predict.blm)
+setMethod("predict",signature(object="lexpit"),predict.lexpit)

@@ -1,3 +1,92 @@
+b.factor <- function(object){
+
+  if(all(is.null(object@active.constraints$active))){
+    B <- rep(0,nrow(object@data))
+  }
+  else{
+   active.cases <- which.constrained(object)
+   active.cases$influence <- NULL
+   m <- sapply(active.cases,length) 
+   lambdas <- rep(object@active.constraints$lambda,m)
+   index <- unlist(active.cases)
+   B <- rep(0,nrow(object@data))
+   B[index] <- lambdas*rep(1/m,m)
+
+   if(class(object)=="blm"){
+     Y <- model.frame(object@formula,object@data)[,1]
+   }
+   else{
+     Y <- model.frame(object@formula.linear,object@data)[,1]
+   }
+  
+   B*ifelse(Y==1,-1,1)           
+ }
+}
+
+
+weighted.vcov.blm <- function(object){
+
+  p <- predict(object)
+  X <- model.matrix(object@formula,object@data)
+  Y <- model.frame(object@formula,object@data)[,1]
+  res <- Y-p  
+  nc <- ncol(X)
+  a <- 1/(p*(1-p)) #WHAT IF INFINITE
+
+  b <- b.factor(object)                
+  w <- X*(object@weights*as.numeric(a)*as.numeric(res)+b)
+
+  strata <- 1:nrow(X)
+  w.split <- split(as.data.frame(w),strata)
+  w.bar <- apply(w,2,mean)
+
+  W2 <- sapply(w.split,function(x){
+    y <- apply(x,2,sum)
+    outer(y-w.bar,y-w.bar)
+  })
+
+  
+  matrix(apply(W2,1,sum),nc,nc)   
+}
+
+
+weighted.vcov.lexpit <- function(object){
+
+  p <- predict(object)
+
+  X <- model.matrix(object@formula.linear,object@data)
+  if(all(X[,1]==1)) X = X[,-1] #REMOVE INTERCEPT TERM
+  if(!is.matrix(X)) X = matrix(X,ncol=1)     
+  Y <- model.frame(object@formula.linear,object@data)[,1]
+  Z <- model.matrix(object@formula.expit,object@data)
+
+  res <- Y-p
+  px <- ncol(X)
+  pz <- ncol(Z)
+  nc <- px+pz
+  a <- 1/(p*(1-p)) #WHAT IF INFINITE?
+  gamma = coef(object)[(px+1):(px+pz)]
+  c <- exp(Z%*%gamma)/(1+exp(Z%*%gamma))^2
+  Z <- Z*as.numeric(c)
+
+  XZ <- cbind(X,Z)
+  
+  b <- b.factor(object)
+  w <- XZ*(object@weights*as.numeric(a)*as.numeric(res)+b)
+
+  strata <- 1:nrow(X)  
+  w.split <- split(as.data.frame(w),strata)
+  w.bar <- apply(w,2,mean)
+
+  W2 <- sapply(w.split,function(x){
+    y <- apply(x,2,sum)
+    outer(y-w.bar,y-w.bar)
+  })
+
+  
+  matrix(apply(W2,1,sum),nc,nc)   
+}
+
 hessian.blm <- function(object){
 
   beta = object@fit$par
