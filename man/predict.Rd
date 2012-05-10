@@ -27,16 +27,16 @@ Risk predictions for fit design matrix.
 }
 
 
-\author{S. Kovalchik \email{s.a.kovalchik@gmail.com}}
+\author{Stephanie Kovalchik \email{s.a.kovalchik@gmail.com}}
 
 \examples{
 
-data(birthwt)
+data(ccdata)
 
-fit.linear <- blm(low~smoke+factor(race)+I(scale(age)),birthwt)
+fit <- lexpit(y~female, y~packyear, data = ccdata,
+       			weight = ccdata$w, strata = ccdata$strata)
 
-head(predict(fit.linear))
-
+predict(fit)[1:10]
 }
 
 

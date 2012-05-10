@@ -5,31 +5,38 @@
 \title{Class "lexpit"}
 
 \description{
-Class for binomial linear-expit regression (LEXPIT).
+Class for linear-expit regression (LEXPIT).
 }
 
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("lexpit", ...)}. 
 }
+
 \section{Slots}{
   \describe{
-    \item{\code{fit}:}{List of output from \code{constrOptim.nl} optimization.}
-    \item{\code{par.start}:}{List of \code{par.start} and \code{not.feasible}.}
-    \item{\code{f.loglik}:}{Function, LEXPIT log-likelihood (objective function of optimization) that takes single argument that is the vector of model parameters.}
-    \item{\code{f.score}:}{Function, LEXPIT score (first derivative of log-likelihood) that takes single argument that is the vector of model parameters.}
-    \item{\code{weights}:}{Vector of weights equal to the number of observations. Weights are applied to each observation's contribution to the estimating equations.}
-    \item{\code{run.time}:}{Numeric, elapsed time of maximization in seconds.}
-    \item{\code{data}:}{Data frame containing the outcomes and explanatory variables.}
-    \item{\code{formula.linear}:}{Model formula for linear effects.}
-    \item{\code{formula.expit}:}{Model formula for nonlinear, expit effects.}
-    \item{\code{ineq}:}{matrix of inequality constraints.}
-   \item{\code{n.missing}:}{number of missing observations removed.}
-    \item{\code{constraints}:}{List of \code{ineq} and \code{ineq.jac} which specify the set of linear inequalities and their Jacobian. Each are functions that take parameters as their only argument.}
-\item{\code{active.constraints}:}{List of final estimates evaluated at \code{ineq} that are less than the \code{tol} setting when \code{augmented} is \code{FALSE} or where Lagrangian lambda are not zero when \code{TRUE}. This is the criterion for judging a constraint active. The components of the list are \code{active.constraints}, a matrix of the linear combination of the model parameters at the boundary of the feasible region, \code{boundary.value} or \code{lambda}.}
-    \item{\code{H}:}{Hessian matrix.}
-    \item{\code{V}:}{Taylor series unconstrained variance-covariance matrix.}
-  }
-}
+  \item{\code{coef.linear}:}{vector of fitted linear coefficients}
+  \item{\code{coef.expit}:}{vector of fitted expit coefficients}
+  \item{\code{vcov.linear}:}{matrix of variance-covariate estimates for linear \code{coef}}
+  \item{\code{vcov.expit}:}{matrix of variance-covariate estimates for expit \code{coef}}
+  \item{\code{formula.linear}:}{model formula for linear component}
+  \item{\code{formula.expit}:}{model formula for expit component}
+  \item{\code{df.residual}:}{residual degrees of freedom}
+  \item{\code{p}:}{number of linear parameters}
+  \item{\code{q}:}{number of expit parameters}
+  \item{\code{data}:}{data frame used in fitting, after applying \code{na.action}}
+  \item{\code{which.kept}:}{vector of index of values in original data source that were used in the model fitting}
+  \item{\code{y}:}{response vector for fitted model}	
+  \item{\code{weights}:}{vector of weights used in model fitting}
+  \item{\code{strata}:}{stratification factor for weighted regression.}
+  \item{\code{converged}:}{logical message about convergence status at the end of algorithm}
+  \item{\code{par.init}:}{initial parameter values for optimization algorithm}
+  \item{\code{loglik}}{value of log-likelihood (normalized for weighted likelihood) under full model} 
+  \item{\code{loglik.null}}{value of log-likelihood (normalized for weighted likelihood) under null model} 
+  \item{\code{barrier.value}}{value of the barrier function at the optimum}
+  \item{\code{dBeta}}{list of \code{linear} and \code{expit} influence measures}
+ } 
+}			     
+
 
 \section{Methods}{
 
@@ -48,25 +55,32 @@ List of estimates and convergence information.
   }
 
 \item{coef}{\code{signature(object = "lexpit")}:
-Extractor for MLEs. 
+Extractor for fitted coefficients. 
   }
   
   \item{vcov}{\code{signature(object = "lexpit")}:
-Extractor for variance-covariance based on Taylor series large-sample Hessian approximation when \code{augmented} is \code{FALSE}; Hessian of augmented objective function when \code{TRUE}.
+Extractor for variance-covariance based on Taylor series large-sample Hessian approximation with the pseudo-likelihood of the constrained optimization.
   }
-  
-    \item{vcovBoot}{\code{signature(object = "lexpit",n.boot=25)}:
-Computes a bootstrap variance-covariance using \code{n.boot} resamplings with replacement.
+
+\item{resid}{\code{signature(object = "lexpit")}:
+Extractor for residuals. 
   }
-  
- \item{gof}{\code{signature(object = "lexpit",groups=10)}:
-Hosmer-Lemeshow goodness-of-fit test where groups are based on ordered rank of predicted risks.
+
+  \item{predict}{\code{signature(object = "lexpit")}:
+Returns vector of linear predictors for each subject of the fitted model.
   }
-      \item{ci}{\code{signature(C,object = "lexpit",alpha=0.05,sig=4,baseline=TRUE,C.expit)}:
-Computes an estimate and confidence interval for given linear combination of the model parameters specified by code{C} and, if specified, at a particular adjusted-baseline through \code{C.expit}.
+
+  \item{confint}{\code{signature(object = "lexpit", parm, level = 0.95,...)}:
+Returns confidence interval (at a given \code{level}) for the specified regression parameters.
   }
+
+  \item{dBeta}{\code{signature(object = "lexpit")}:
+Extract dBetas for the fitted \code{lexpit} model. These are the jackknife deviations by subject and regression coefficient.
+  }
+
  }
 }
 
+\seealso{\code{\link{lexpit}}, \code{\link{constrOptim}}}
 
 \keyword{classes}

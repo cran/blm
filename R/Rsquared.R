@@ -1,7 +1,8 @@
-efron <- function(obs,pred){
-  1-sum((obs-pred)^2)/sum((obs-mean(obs))^2)
-}
+Rsquared <- function(object){
 
+if(class(object)[1]!="lexpit"&class(object)[1]!="blm")
+		stop("Object must be an instance of a blm or lexpit model.")
+		
 mcfadden <- function(loglik,loglik.null){
   1-loglik/loglik.null
 }
@@ -9,12 +10,10 @@ mcfadden <- function(loglik,loglik.null){
 mcfadden.adj <- function(loglik,loglik.null,num.params){
   1-(loglik-num.params)/loglik.null
 }
-
-cox.snell <- function(loglik,loglik.null,N){
-  1-exp(2/N*(loglik.null-loglik))
+	
+	list(
+		R2 = mcfadden(object@loglik,object@loglik.null),
+		R2adj = mcfadden.adj(object@loglik,object@loglik.null,length(object@coef))
+	 )
+	
 }
-
-cox.snell.adj <- function(loglik,loglik.null,N){
-  cox.snell(loglik,loglik.null,N)/(1-exp(loglik.null)^(2/N))
-}
-

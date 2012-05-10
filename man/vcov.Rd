@@ -17,10 +17,15 @@ Returns Hessian-based variance-covariance matrix of the fit of a \code{blm} or \
 \item{vcov}{\code{signature(object = "blm")}:
 Extractor for variance-covariance of MLEs. 
   }
+
+\item{vcov}{\code{signature(object = "lexpit")}:
+Extractor for variance-covariance of MLEs. 
+  }
+
  }
 }
 
 
-\author{S. Kovalchik \email{s.a.kovalchik@gmail.com}}
+\author{Stephanie Kovalchik \email{s.a.kovalchik@gmail.com}}
 
 \keyword{methods}

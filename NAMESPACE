@@ -1,27 +1,4 @@
-export(blm,
-       lexpit,
-       expit,
-       hosmerlem,
-       logistic.rd,
-       logistic.rr,
-       logistic.dispersion,
-       logistic.baseline,
-       blm.rr)
-importFrom(stats,coef,vcov,predict,resid,influence)
-importFrom(graphics,plot)
+export(blm,lexpit,EO,which.at.boundary,Rsquared,expit,logit,gof,gof.pearson)
 exportClasses(blm,lexpit)
-exportMethods(summary,
-              print,
-              show,
-              coef,
-              vcov,
-              subresample,
-              predict,
-              resid,
-              gof,
-              ci,ci.blm,ci.logit.transform,
-              EO,
-              which.constrained,
-              is.constrained,
-              influence,
-              plot)
+importFrom("stats",coef,confint,vcov,predict,resid)
+exportMethods(show,coef,vcov,predict,confint,summary,resid,dBeta)

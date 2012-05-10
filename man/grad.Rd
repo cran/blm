@@ -1,22 +1,21 @@
-\name{grad}
+\name{ccdata}
 \docType{data}
-\alias{grad}
+\alias{ccdata}
 
-\title{Data set on admission to graduate school}
+\title{Simulated case-control dataset}
 
-\description{Admission outcomes by academic performance and univeristy characteristics}
+\description{Simulated population-based case-control dataset}
 \usage{
-grad
+ccdata
 }
 \format{
   \tabular{ll}{
-    admit:\tab indicator for admission to grad school \cr
-    gre:\tab GRE score \cr
-    gpa: \tab grade point average \cr
-    rank: \tab prestige of undergraduate institution (1 highest, 4 lowest)\cr
+    female:\tab indicator for female gender \cr
+    packyear:\tab discrete variable representing pack-years smoked \cr
+    strata: \tab stratification variable \cr
+    y: \tab indicator of case status (1 for case, 0 for control) \cr
+    w: \tab inverse of sampling fraction
   }
 }
-\source{
-\url{http://www.ats.ucla.edu/stat/r/dae/logit.htm}
-}
+
 \keyword{datasets}

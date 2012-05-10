@@ -1,103 +1,92 @@
-blm <- function(f,data,par.init,weights=NULL,ineq=NULL,trace=FALSE,tol=1e-6,
-                augmented=TRUE,warn=-1,...){
+blm <- function(formula,data,na.action=na.omit,
+							weights=NULL,strata=NULL,par.init=NULL,...){
 
-       warn.setting <- getOption("warn")
-       options(warn=warn)
-         
-       if(missing(data)){
-         stop("Dataset not supplied. Data must be given as a dataframe.")
-       }
+na.lexpit <- function(f,data,FUN){
 
-       if(missing(f)|class(f)!="formula"){
-         stop("Invalid formula supplied.")
-       }
-  
-       na.rm <- remove.missing.blm(f,data)
-       data = na.rm$data
+	keep.data <- subset(data,select=all.vars(f))
+	keep.data <- FUN(keep.data)
+	kept <- match(row.names(keep.data),row.names(data))
 
-       if(!is.na(na.rm$missing)){
-         warning(paste(na.rm$missing,"rows with missing observation removed."))
-       }
-       else{
-         na.rm$missing <- 0
-       }
-       
-       
-        if(missing(par.init)){
-           par.start <- starting.values.blm(f,data)
-        }
-        else{
-           par.start <- starting.values.blm(f,data,par.init=par.init)
-        }
-
-      weighted = ifelse(is.null(weights),FALSE,TRUE)
-
-      if(!weighted) weights = rep(1,nrow(data))
-       
-      LL <- blm.loglik(f,data,weights)
-      score <- blm.dot.loglik(f,data,weights)
-      constraints <- blm.constraints(f,data,ineq.mat=ineq)
-
-      process.start = proc.time()
-
-      if(augmented){
-        
-        fit <- auglag(par=par.start$par.start,fn=LL,gr=score,										hin=constraints$ineq,hin.jac=constraints$ineq.jac,
-                                     control.outer=list(trace=trace,...))
-          }
-        else{
-
-       fit <- constrOptim.nl(par=par.start$par.start,fn=LL,gr=score,									 hin=constraints$ineq,hin.jac=constraints$ineq.jac,
-                                     control.outer=list(trace=trace,...))
-        }
-
-      run.time = proc.time()-process.start
-      run.time = as.numeric(run.time)[3]
-      fit$par <- matrix(fit$par,ncol=1)
-      rownames(fit$par) <- par.start$names
-
-		blm.object <- new("blm",
-					  fit = fit,
-					  par.start = par.start,
-					  f.loglik = LL,
-					  f.score = score,
-                                          weights = weights,
-                                          run.time = run.time,
-					  data = data,
-					  formula = f,
-					  constraints = constraints,
-                                          active.constraints = list(),
-					  ineq = constraints$ineq.mat,
-                                          n.missing = na.rm$missing,
-                                          H = matrix(),
-                                          V = matrix()
-					  )
-
-             
-       if(augmented){
-          H = -fit$hessian
-          blm.object@active.constraints = check.auglag.blm.active.constraints(blm.object)
-        }
-       else{
-          H = hessian.blm(blm.object)
-          blm.object@active.constraints = check.active.constraints(blm.object,tol)
-        }
-
-          V = -solve(H)
-
-          blm.object@H = H
-          blm.object@V = V
-
-       if(weighted){    #SANDWHICH ESTIMATOR
-         S <- weighted.vcov.blm(blm.object)
-         blm.object@V = V%*%S%*%V
-       }
-       
-       options(warn=warn.setting)
-
-        if(!augmented&!is.null(blm.object@active.constraints)){
-          warning("\nEstimates at the boundary and augmented Lagrangian not used.\nStandard errors might be inaccurate.",immediate.=TRUE,call.=FALSE)
-         }
-       
- blm.object
+list(data = keep.data, kept = kept)
 }
+
+LL <- function(Y,p,w){
+		l <- w*(Y*logit(p)+log(1-p))
+	-sum(l)
+}
+
+	data <- na.lexpit(formula,data,FUN=na.action)
+	which.kept <- data$kept
+	data <- data$data
+	
+	Y <- model.frame(formula,data)[,1]
+	X <- model.matrix(formula,data)
+	
+	if(is.null(weights)){
+			weights <- rep(1,nrow(X))
+			}
+	else{
+			weights <- weights[which.kept]
+			}
+	
+	# STANDARDIZE WEIGHTS FOR STABILITY
+	w <- cbind(weights/mean(weights))
+		
+	if(is.null(strata)){
+			strata <- rep(1,nrow(X))
+			}
+		else{
+			strata <- strata[which.kept]
+			}
+			
+	if(!class(strata)=="factor") strata <- factor(strata)
+	
+	if(is.null(par.init)){
+		beta.init <- rep(0,ncol(X))
+		beta.init[1] <- sum(Y*w)/sum(w)
+	}
+	else{
+		beta.init <- par.init
+		}
+		
+	fit <- blm.optim(Y,X,w,beta.init,...)
+	beta <- fit$par
+		
+	devs <- blm.deviates(beta,Y,X,cbind(w))
+	vcov <- blm.influence(devs,strata)
+	
+	devs <- t(devs)
+	
+	if(attr(terms(formula),"intercept")==1){
+		devs <- cbind(devs[,-1])
+		colnames(devs) <- colnames(X)[-1]
+	}
+	else{
+		colnames(devs) <- colnames(X)
+		}
+		
+	names(beta) <- colnames(X)
+	
+	# NULL MODEL, ESTIMATE IS THE OVERALL MEAN
+	ll.null <- -LL(Y,sum(Y*w)/sum(w),cbind(weights))
+	
+	new("blm",
+		coef = beta,
+		vcov = vcov,
+		formula= formula,
+		df.residual = nrow(X)-ncol(X),
+		data = data,
+		which.kept = which.kept,
+		y = Y,
+		weights = as.numeric(weights),
+		strata = strata,
+		converged = fit$convergence==0,
+		par.init = beta.init,
+		loglik = -LL(Y,X%*%beta,cbind(weights)),
+		loglik.null = ll.null,
+		barrier.value = fit$barrier.value,
+		dBeta = devs
+	)
+	
+}
+

@@ -1,7 +1,7 @@
-\name{gof}
-\alias{gof}
+\name{gof.pearson}
+\alias{gof.pearson}
 
-\title{Hosmer-lemeshow goodness-of-fit statistics for \code{blm} and \code{lexpit} objects.}
+\title{Pearson's goodness-of-fit statistics for \code{blm} and \code{lexpit} objects.}
 
 \description{
 
@@ -10,7 +10,7 @@ Computes the deviance and Pearson chi-squared statistics for the fit from a \cod
 }
 
 \section{usage}{
-gof(object)
+gof.pearson(object)
 }
 
 \section{arguments}{
@@ -22,19 +22,17 @@ gof(object)
  }
 
 \value{
-Returns a list with \code{table}, with expected \code{E} and observed \code{O}, and the chi-square test \code{chisq} and p-value (\code{p.value}) for the Pearson goodness-of-fit test. The observed and expected count are listed in the order of the unique levels formed by the design matrix.
+Returns a list with expected \code{E} and observed \code{O} and the chi-square test \code{chisq} and p-value (\code{p.value}) for the Pearson goodness-of-fit test. The observed and expected count are listed in the order of the unique levels formed by the design matrix.
 }
 
 \examples{
 
 data(ccdata)
 
-ccdata$packyear <- ccdata$packyear+runif(nrow(ccdata))
-
-fit <- blm(y~female+packyear,data = ccdata,
+fit <- blm(y~female+I(packyear>20),data = ccdata,
 			weight = ccdata$w, strata = ccdata$strata)
 
-gof(fit)
+gof.pearson(fit)
 
 }
 

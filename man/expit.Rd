@@ -24,7 +24,6 @@ expit(x)
 Numeric that is the inverse logit of \code{x}.
 }
 
-\author{S. Kovalchik \email{s.a.kovalchik@gmail.com}}
 
 \examples{
 

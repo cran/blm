@@ -14,18 +14,16 @@ Print estimates of a \code{blm} or \code{lexpit} model fit.
 
 \section{Methods}{
 \describe{
-\item{show}{\code{signature(x = "blm")}:
-Display call, summary matrix of estimates, t-values, p-values  (to 3 significant digits), degrees of freedom, Log-lik, and AIC of \code{blm} object.
+\item{show}{\code{signature(object = "blm")}:
+Call, coefficient estimates, and AIC for fitted model.
   }
 
-\item{show}{\code{signature(x = "lexpit")}:
-Display call, summary matrix of estimates, t-values, p-values  (with \code{digits} number of significant digits), degrees of freedom, Log-lik, and AIC of \code{lexpit} object.
+\item{show}{\code{signature(object = "lexpit")}:
+Call, coefficient estimates, and AIC for fitted model.
   }
   }
  }
 
-
-
-\author{S. Kovalchik \email{s.a.kovalchik@gmail.com}}
+\author{Stephanie Kovalchik \email{s.a.kovalchik@gmail.com}}
 
 \keyword{methods}

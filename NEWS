@@ -1,0 +1,12 @@
+Version 2.1
+-------------------------------------------------------------------
+
+The constrained optimization procedure is now done in two stages for LEXPIT for the linear and expit components. This has the benefit of reducing constraints to linear piece where all inequalities will be linear in the parameters.
+
+Naming of ci changed to confint.
+
+The hosmerlem function has been changed to gof.
+
+The gof.pearson function has been added to compute Pearson's goodness-of-fit test.
+
+A revised vignette reflects the changes in 2.1.

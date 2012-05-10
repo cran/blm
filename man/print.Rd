@@ -14,18 +14,17 @@ Prints the regression coefficients of the fit of a \code{blm} or \code{lexpit} m
 
 \section{Methods}{
 \describe{
-\item{print}{\code{signature(x = "blm",digits=4,...)}:
-Display call, summary matrix of estimates, t-values, p-values  (with \code{digits} number of significant digits), degrees of freedom, Log-lik, and AIC of \code{blm} object.
+
+\item{print}{\code{signature(x = "blm")}:
+Call and coefficient estimates.
   }
 
-\item{print}{\code{signature(x = "lexpit",digits=4,...)}:
-Display call, summary matrix of estimates, t-values, p-values (with \code{digits} number of significant digits), degrees of freedom, Log-lik, and AIC of \code{lexpit} object.
+\item{print}{\code{signature(x = "lexpit")}:
+Call and coefficient estimates.
   }
-  }
+ }
 }
 
-
-
-\author{S. Kovalchik \email{s.a.kovalchik@gmail.com}}
+\author{Stephanie Kovalchik \email{s.a.kovalchik@gmail.com}}
 
 \keyword{methods}

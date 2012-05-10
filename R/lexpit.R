@@ -1,108 +1,126 @@
-lexpit <- function(f.linear,f.expit,data,par.init,weights=NULL,ineq=NULL,trace=FALSE,tol=1e-6,augmented=TRUE,warn=-1,...){
+lexpit <- function(formula.linear,formula.expit,data,na.action=na.omit,
+					weights=NULL,strata=NULL, par.init = NULL,
+					control.lexpit=list(max.iter=1000,tol=1E-7),...){
 
-       warn.setting <- getOption("warn")
-       options(warn=warn)
-       
-       if(missing(data)){
-         stop("Dataset not supplied. Data must be given as a dataframe.")
-       }
+na.lexpit <- function(f1,f2,data,FUN){
 
-       if(missing(f.linear)|class(f.linear)!="formula"){
-         stop("Invalid formula for linear component of model supplied.")
-       }
+	keep.data <- subset(data,select=unique(c(all.vars(f1),all.vars(f2))))
+	keep.data <- FUN(keep.data)
+	kept <- match(row.names(keep.data),row.names(data))
 
-       if(missing(f.expit)|class(f.expit)!="formula"){
-         stop("Invalid formula for expit component of model supplied.")
-       }
-       
-       na.rm <- remove.missing.lexpit(f.linear,f.expit,data)
-       data = na.rm$data
-       
-       if(!is.na(na.rm$missing)){
-         warning(paste(na.rm$missing,"rows with missing observation removed."))
-       }
-       else{
-         na.rm$missing <- 0
-       }
-        
-        if(missing(par.init)){
-            par.start <- starting.values.lexpit(f.linear,f.expit,data)
-        }
-        else{
-            par.start <- starting.values.lexpit(f.linear,f.expit,data,par.init=par.init)
-         }
-
-      weighted = ifelse(is.null(weights),FALSE,TRUE)
-      if(!weighted) weights = rep(1,nrow(data))
-       
-
-   LL <- lexpit.loglik(f.linear,f.expit,data,w=weights)
-   score <- lexpit.dot.loglik(f.linear,f.expit,data,w=weights)
-
-   constraints <- lexpit.constraints(f.linear,f.expit,data,ineq.mat=ineq)
-
-   process.start = proc.time()
-
-      if(augmented){
-        
-        fit <- auglag(par=par.start$par.start,fn=LL,gr=score,										hin=constraints$ineq,hin.jac=constraints$ineq.jac,
-                                    control.outer=list(trace=trace,...))
-      
-          }
-        else{
-
-       fit <- constrOptim.nl(par=par.start$par.start,fn=LL,gr=score,									hin=constraints$ineq,hin.jac=constraints$ineq.jac,
-                                     control.outer=list(trace=trace,...))
-        }
-
-   run.time = proc.time()-process.start
-   run.time = as.numeric(run.time)[3]
-   fit$par <- matrix(fit$par,ncol=1)
-   rownames(fit$par) <- par.start$names
-        
-        	lexpit.object <- new("lexpit",
-					  fit = fit,
-					  par.start = par.start,
-					  f.loglik = LL,
-					  f.score = score,
-                                          weights = weights,
-					  run.time = run.time,
-					  data = data,
-					  formula.linear = f.linear,
-					  formula.expit = f.expit,
-					  constraints = constraints,
-                                          active.constraints = list(),
-       					  ineq = constraints$ineq.mat,
-                                          n.missing=na.rm$missing,
-                                          H = matrix(),
-                                          V = matrix()
-					  )
-
-       if(augmented){
-          H = -fit$hessian
-          lexpit.object@active.constraints = check.auglag.lexpit.active.constraints(lexpit.object)
-        }
-       else{
-          H = hessian.lexpit(lexpit.object)
-          lexpit.object@active.constraints = check.lexpit.active.constraints(lexpit.object,tol)
-        }
-       
-          V = -solve(H)
-
-          lexpit.object@H = H
-          lexpit.object@V = V
-
-       if(weighted){    #SANDWHICH ESTIMATOR
-         S <- weighted.vcov.lexpit(lexpit.object)
-         lexpit.object@V = V%*%S%*%V
-        }
-       
-        options(warn=warn.setting)
-
-        if(!augmented&!is.null(lexpit.object@active.constraints)){
-          warning("\nEstimates at the boundary and augmented Lagrangian not used.\nStandard errors might be inaccurate.",immediate.=TRUE,call.=FALSE)
-         }
-       
-
- lexpit.object		
+list(data = keep.data, kept = kept)
 }
+
+LL <- function(Y,p,w){
+		l <- w*(Y*logit(p)+log(1-p))
+	-sum(l)
+}
+	data <- na.lexpit(formula.linear,formula.expit,data,FUN=na.action)
+	which.kept <- data$kept
+	data <- data$data
+	
+	Y <- model.frame(formula.linear,data)[,1]
+	X <- model.matrix(formula.linear,data)
+	Z <- model.matrix(formula.expit,data)
+	
+	x.has.intercept <- attr(terms(formula.linear),"intercept")==1
+	
+	if(x.has.intercept) X <- X[,-1]
+	
+	if(!is.matrix(X)) X <- cbind(X)
+	if(!is.matrix(Z)) Z <- cbind(Z)
+	if(is.null(weights)){
+			weights <- rep(1,nrow(X))
+			}
+	else{
+			weights <- weights[which.kept]
+			}
+	
+	# STANDARDIZE WEIGHTS FOR STABILITY
+	w <- cbind(weights/mean(weights))
+		
+	if(is.null(strata)){
+			strata <- rep(1,nrow(X))
+			}
+		else{
+			strata <- strata[which.kept]
+			}
+			
+	if(!class(strata)=="factor") strata <- factor(strata)
+	
+	if(!is.list(par.init)){
+		beta.init <- rep(0,ncol(X))
+		gamma.init <- do.call(glm,
+					list(
+						formula=formula.expit,
+						data=data,
+						family="binomial",
+						weight=weights))$coef
+						}
+	else{
+		beta.init <- par.init$linear
+		gamma.init <- par.init$expit
+	}
+	
+	i <- 0
+	threshold.met <- FALSE
+	criterion <- 0
+	
+	beta <- beta.init
+	gamma <- gamma.init
+	
+	while(i<control.lexpit$max.iter&!threshold.met){
+		
+		fit <- optim.lexpit(beta,gamma,Y,X,Z,w)
+		beta <- fit$beta
+		gamma <- fit$gamma
+		threshold.met <- abs(fit$loglik-criterion)<control.lexpit$tol
+		criterion <- fit$loglik
+		i <- i+1
+	}
+	
+	
+	coef.deviates <- deviates(beta,gamma,Y,X,Z,cbind(w)) 
+	vcov <- influence(coef.deviates[[1]],coef.deviates[[2]],strata)
+	
+	coef.deviates[[1]] <- t(coef.deviates[[1]])
+	colnames(coef.deviates[[1]]) <- colnames(X)
+	
+	coef.deviates[[2]] <- t(coef.deviates[[2]])
+	coef.deviates[[2]] <- cbind(coef.deviates[[2]][,-1])
+	colnames(coef.deviates[[2]]) <- colnames(Z)[-1]
+	
+	names(beta) <- colnames(X)
+	names(gamma) <- colnames(Z)
+	
+	if(ncol(X)==1) names(beta) <- all.vars(formula.linear)[2]
+	if(ncol(Z)==1) names(gamma) <- "(Intercept)"
+	
+	# NULL MODEL, ESTIMATE IS THE OVERALL MEAN
+	ll.null <- -LL(Y,sum(Y*w)/sum(w),cbind(weights))
+	
+	new("lexpit",
+		coef.linear = beta,
+		coef.expit = gamma,
+		vcov.linear = vcov[[1]],
+		vcov.expit = vcov[[2]],
+		formula.linear = formula.linear,
+		formula.expit = formula.expit,
+		df.residual = nrow(X)-ncol(X)-ncol(Z),
+		p = ncol(X),
+		q = ncol(Z),
+		data = data,
+		which.kept = which.kept,
+		y = Y,
+		weights = as.numeric(weights),
+		strata = strata,
+		converged = i<control.lexpit$max.iter,
+		par.init = c(beta.init, gamma.init),
+		loglik = -LL(Y,X%*%beta+expit(Z%*%gamma),cbind(weights)),
+		loglik.null = ll.null,
+		barrier.value = fit$barrier.value,
+		dBeta = coef.deviates
+	)
+	
+}
+

@@ -1,33 +1,38 @@
-\name{which.constrained}
-\docType{methods}
-\alias{which.constrained}
-\alias{which.constrained,blm-method}
-\alias{which.constrained,lexpit-method}
+\name{which.at.boundary}
+\alias{which.at.boundary}
 
-\title{Index of constrained observations for \code{blm} and \code{lexpit} objects.}
+\title{Covariate patterns at the boundary for \code{blm} and \code{lexpit} objects.}
 
 \description{
 
-Returns list of the row index for constrained observations and a vector of the total influence of the constrained covariate profile. The \code{influence}/m can be interpreted as the excess representation of the observation in the estimating equations, where m is the total number of observations with the same covariate pattern.
+Returns matrix of covariate types with a predicted probability at the lower or upper boundary defined by the specified \code{criterion} or \code{NA} if no boundary constraints are present.
 
 }
 
-\section{Methods}{
+\section{usage}{
+which.at.boundary  (object, criterion = 1e-06) 
+}
+
+\section{arguments}{
 \describe{
-
- \item{which.constrained}{\code{signature(object = "blm")}:
-List of index and influence of constrained observations.
-  }
-
- \item{which.constrained}{\code{signature(object = "lexpit")}:
-List of index and influence of constrained observations.
-  }
-
+\item{object}{model fit of class \code{blm} or \code{lexpit}}
+\item{criterion}{numeric distance from 0 (or 1) that is considered to be at the boundary}
  }
 }
 
+\value{
+Returns all rows of design matrix whose predicted risk are less than or equal to \code{criterion} or greater than or equal to 1 - \code{criterion}.
+}
 
-\author{S. Kovalchik \email{s.a.kovalchik@gmail.com}}
+\author{Stephanie Kovalchik \email{s.a.kovalchik@gmail.com}}
 
+\examples{
 
-\keyword{methods}
+data(ccdata)
+
+fit <- blm(y~female+packyear,data = ccdata,
+			weight = ccdata$w, strata = ccdata$strata)
+
+which.at.boundary(fit)
+
+}
