@@ -19,7 +19,7 @@ setClass("lexpit",
 		loglik = "numeric",
 		loglik.null = "numeric",
 		barrier.value = "numeric",
-		dBeta = "list"
+		control.lexpit = "list"
 	)
 )
 
@@ -71,7 +71,7 @@ setMethod("summary","lexpit",
 				
 			#LINEAR		
 			t <- object@coef.linear/sqrt(diag(object@vcov.linear))
-			p <- sapply(t,function(x)pt(abs(x),df=object@df.residual,lower=FALSE))
+			p <- sapply(t,function(x)2*pt(abs(x),df=object@df.residual,lower.tail=FALSE))
 			
 			linear.mat <- cbind(
 				object@coef.linear,
@@ -84,7 +84,7 @@ setMethod("summary","lexpit",
 			
 			#EXPIT
 			t <- object@coef.expit/sqrt(diag(object@vcov.expit))
-			p <- sapply(t,function(x)pt(abs(x),df=object@df.residual,lower=FALSE))
+			p <- sapply(t,function(x) 2*pt(abs(x),df=object@df.residual,lower.tail=FALSE))
 			
 			expit.mat <- cbind(
 				object@coef.expit,
@@ -132,8 +132,7 @@ setClass("blm",
 		par.init = "numeric",
 		loglik = "numeric",
 		loglik.null = "numeric",
-		barrier.value = "numeric",
-		dBeta = "matrix"
+		barrier.value = "numeric"
 	)
 )
 
@@ -174,7 +173,7 @@ setMethod("summary","blm",
 
 			#LINEAR		
 			t <- object@coef/sqrt(diag(object@vcov))
-			p <- sapply(t,function(x)pt(abs(x),df=object@df.residual,lower=FALSE))
+			p <- sapply(t,function(x) 2*pt(abs(x),df=object@df.residual,lower.tail=FALSE))
 			
 			linear.mat <- cbind(
 				object@coef,
@@ -202,8 +201,14 @@ setMethod("vcov","blm",
 setMethod("resid", "blm", function(object) object@y - predict(object))
 setMethod("resid", "lexpit", function(object) object@y - predict(object))
 
-setGeneric("dBeta",function(object) standardGeneric("dBeta"))
 
-setMethod("dBeta","blm",function(object) object@dBeta)
-setMethod("dBeta","lexpit",function(object) object@dBeta)
+setGeneric("leverage",function(object) standardGeneric("leverage"))
+
+setMethod("leverage","blm",function(object) blm.leverage(object))
+setMethod("leverage","lexpit",function(object) lexpit.leverage(object))
+
+setGeneric("displacement",function(object) standardGeneric("displacement"))
+
+setMethod("displacement","blm",function(object) C(object))
+setMethod("displacement","lexpit",function(object) C(object))
 

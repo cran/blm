@@ -1,5 +1,5 @@
 blm <- function(formula,data,na.action=na.omit,
-							weights=NULL,strata=NULL,par.init=NULL,...){
+							weights=NULL,strata=NULL,par.init=NULL,warn=FALSE,...){
 
 na.lexpit <- function(f,data,FUN){
 
@@ -15,12 +15,24 @@ LL <- function(Y,p,w){
 	-sum(l)
 }
 
+	warn.option <- getOption("warn")
+	if(!warn) options("warn"=-1)
+	
 	data <- na.lexpit(formula,data,FUN=na.action)
 	which.kept <- data$kept
 	data <- data$data
 	
 	Y <- model.frame(formula,data)[,1]
 	X <- model.matrix(formula,data)
+
+	if(is.null(strata)){
+				strata <- rep(1,nrow(data)) 
+			}
+	else{
+				strata <- strata[which.kept]
+		}
+			
+	if(!class(strata)=="factor") strata <- factor(strata)
 	
 	if(is.null(weights)){
 			weights <- rep(1,nrow(X))
@@ -31,16 +43,7 @@ LL <- function(Y,p,w){
 	
 	# STANDARDIZE WEIGHTS FOR STABILITY
 	w <- cbind(weights/mean(weights))
-		
-	if(is.null(strata)){
-			strata <- rep(1,nrow(X))
-			}
-		else{
-			strata <- strata[which.kept]
-			}
 			
-	if(!class(strata)=="factor") strata <- factor(strata)
-	
 	if(is.null(par.init)){
 		beta.init <- rep(0,ncol(X))
 		beta.init[1] <- sum(Y*w)/sum(w)
@@ -51,24 +54,21 @@ LL <- function(Y,p,w){
 		
 	fit <- blm.optim(Y,X,w,beta.init,...)
 	beta <- fit$par
-		
-	devs <- blm.deviates(beta,Y,X,cbind(w))
-	vcov <- blm.influence(devs,strata)
 	
-	devs <- t(devs)
+	if(any(weights!=1))
+		vcov <- solve(vcov.blm.revised.strata(beta,cbind(Y),X,cbind(w),strata))
+	else
+		vcov <- solve(vcov.blm.revised(beta,cbind(Y),X,cbind(w)))
 	
-	if(attr(terms(formula),"intercept")==1){
-		devs <- cbind(devs[,-1])
-		colnames(devs) <- colnames(X)[-1]
-	}
-	else{
-		colnames(devs) <- colnames(X)
-		}
-		
-	names(beta) <- colnames(X)
+	x.labels <- attr(terms(formula), "term.labels") # DOES NOT INCLUDE INTERCEPT
+
+	if(attr(terms(formula),"intercept")==1) x.labels <- c("(Intercept)", x.labels)
+	names(beta) <- x.labels
 	
 	# NULL MODEL, ESTIMATE IS THE OVERALL MEAN
 	ll.null <- -LL(Y,sum(Y*w)/sum(w),cbind(weights))
+	
+	options("warn"=warn.option)
 	
 	new("blm",
 		coef = beta,
@@ -84,8 +84,7 @@ LL <- function(Y,p,w){
 		par.init = beta.init,
 		loglik = -LL(Y,X%*%beta,cbind(weights)),
 		loglik.null = ll.null,
-		barrier.value = fit$barrier.value,
-		dBeta = devs
+		barrier.value = fit$barrier.value
 	)
 	
 }

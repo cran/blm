@@ -1,0 +1,88 @@
+\documentclass{article}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\addtolength{\parskip}{.1in}
+
+\begin{document}
+
+\begin{center}
+Log-likelihood equations for LEXPIT model
+\end{center}
+
+Under the LEXPIT, the model for the binomial probability is
+
+\[
+\pi = x'\beta+\mbox{expit}(z'\gamma)
+\]
+
+\noindent for $x$ and $z$ covariates, with $z$ including an intercept term and `expit' denotes the sigmoid (inverse-logit) function $\mbox{expit}(x) = exp(x)/(1+exp(x))$.
+
+For $n$ observations and the $i$th event outcome as $y_i$ and case weight $w_i$, the score for an arbitrary coefficient $\theta$ is
+
+\[
+S(\theta) = \sum_i \dot{\pi}(\theta;x_i,z_i) w_i \nu (\pi(\theta;x_i,z_i))^{-1}(y_i - \pi(\theta;x_i,z_i)),
+\]
+
+\noindent where $\nu(x) = x(1-x)$ the first derivative of the expit function. Let $A_i(\theta) = \nu(\pi(\theta;x_i,z_i))^{-1}(y_i - \pi(\theta;x_i,z_i))$. The Hessian is 
+
+\[
+\dot{S}(\theta) = \sum_i w_i \left[ \ddot{\pi}(\theta;x_i,z_i) A_i(\theta) -\dot{\pi}(\theta;x_i,z_i) \dot{\pi}(\theta;x_i,z_i)' \nu(\pi(\theta;x_i,z_i))^{-1} ( A_i(\theta) + 1 ) \right].
+\]
+
+\noindent For $\pi(\beta;x_i,z_i)$, 
+
+\[
+\dot{\pi}(\beta;x_i,z_i) = x_i \mbox{ and } \ddot{\pi}(\beta;x_i,z_i) = 0.
+\]
+
+\noindent For $\pi(\gamma;x_i,z_i)$, 
+
+\[
+\dot{\pi}(\gamma;x_i,z_i) = z_i \mbox{dexpit}(z_i'\gamma)
+\]
+
+\noindent and
+ 
+\[
+\ddot{\pi}(\gamma;x_i,z_i) = z_iz_i' \mbox{ddexpit}(z_i'\gamma),
+\]
+
+\noindent where $\mbox{dexpit}(x) = \mbox{expit}(x) (1- \mbox{expit}(x))$ and $\mbox{ddexpit}(x) = \mbox{dexpit}(x) (1-2 \mbox{expit}(x))$. The Hessian for $\beta$ is
+
+
+\[
+\dot{S}(\beta) = - \sum_i w_i x_i x_i' \nu(\pi(\theta;x_i,z_i))^{-1} ( A_i(\theta) + 1 ).
+\]
+
+\noindent and for $\gamma$ is 
+\[
+\dot{S}(\gamma) = \sum_i w_i z_i z_i' \left[  \mbox{ddexpit}(z_i'\gamma) A_i(\theta) -\mbox{dexpit}(z_i'\gamma)^2 \nu(\pi(\theta;x_i,z_i))^{-1} ( A_i(\theta) + 1 ) \right],
+\]
+
+\noindent and the partial derivative of $S(\beta)$ with respect to $\gamma$ is
+
+\[
+\frac{\partial S(\beta)}{\partial \gamma} = - \sum_i w_i x_i z_i' \left[  \mbox{dexpit}(z_i'\gamma) \nu(\pi(\theta;x_i,z_i))^{-1} ( A_i(\theta) + 1 ) \right].
+\]
+
+\noindent In matrix form,
+
+\[
+\mathcal{H}(\beta) = - X' W(\beta) X
+\] 
+
+\noindent with $W(\beta) = \mbox{Diag}\lbrace w_1 \nu(\pi(\theta;x_1,z_1))^{-1} ( A_1(\theta) + 1 ),\dots\rbrace$.
+
+\[
+\mathcal{H}(\gamma) =  Z' W(\gamma) Z
+\] 
+
+\noindent with $W(\gamma) = \mbox{Diag}\lbrace w_1 \mbox{ddexpit}(z_1'\gamma) A_1(\theta) -\mbox{dexpit}(z_1'\gamma)^2 \nu(\pi(\theta;x_1,z_1))^{-1} ( A_1(\theta) + 1 ),\dots \rbrace$.
+
+\[
+\mathcal{H}(\beta,\gamma) =  -X' W(\beta,\gamma) Z
+\] 
+
+\noindent with $W(\beta,\gamma) = \mbox{Diag}\lbrace w_1 \mbox{dexpit}(z_1'\gamma) \nu(\pi(\theta;x_1,z_1))^{-1} ( A_1(\theta) + 1 ),\dots\rbrace$.
+
+
+\end{document}

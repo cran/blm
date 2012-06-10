@@ -1,5 +1,5 @@
 lexpit <- function(formula.linear,formula.expit,data,na.action=na.omit,
-					weights=NULL,strata=NULL, par.init = NULL,
+					weights=NULL,strata=NULL, par.init = NULL,warn=FALSE,
 					control.lexpit=list(max.iter=1000,tol=1E-7),...){
 
 na.lexpit <- function(f1,f2,data,FUN){
@@ -29,8 +29,19 @@ LL <- function(Y,p,w){
 	
 	if(!is.matrix(X)) X <- cbind(X)
 	if(!is.matrix(Z)) Z <- cbind(Z)
+
+	
+	if(is.null(strata)){
+				strata <- rep(1,nrow(data)) 
+			}
+	else{
+				strata <- strata[which.kept]
+		}
+			
+	if(!class(strata)=="factor") strata <- factor(strata)
+	
 	if(is.null(weights)){
-			weights <- rep(1,nrow(X))
+			weights <- rep(1,nrow(data))
 			}
 	else{
 			weights <- weights[which.kept]
@@ -38,15 +49,6 @@ LL <- function(Y,p,w){
 	
 	# STANDARDIZE WEIGHTS FOR STABILITY
 	w <- cbind(weights/mean(weights))
-		
-	if(is.null(strata)){
-			strata <- rep(1,nrow(X))
-			}
-		else{
-			strata <- strata[which.kept]
-			}
-			
-	if(!class(strata)=="factor") strata <- factor(strata)
 	
 	if(!is.list(par.init)){
 		beta.init <- rep(0,ncol(X))
@@ -62,6 +64,9 @@ LL <- function(Y,p,w){
 		gamma.init <- par.init$expit
 	}
 	
+	warn.option <- getOption("warn")
+	if(!warn) options("warn"=-1)
+	
 	i <- 0
 	threshold.met <- FALSE
 	criterion <- 0
@@ -71,7 +76,7 @@ LL <- function(Y,p,w){
 	
 	while(i<control.lexpit$max.iter&!threshold.met){
 		
-		fit <- optim.lexpit(beta,gamma,Y,X,Z,w)
+		fit <- optim.lexpit(beta,gamma,Y,X,Z,w,...)
 		beta <- fit$beta
 		gamma <- fit$gamma
 		threshold.met <- abs(fit$loglik-criterion)<control.lexpit$tol
@@ -79,36 +84,32 @@ LL <- function(Y,p,w){
 		i <- i+1
 	}
 	
-	
-	coef.deviates <- deviates(beta,gamma,Y,X,Z,cbind(w)) 
-	vcov <- influence(coef.deviates[[1]],coef.deviates[[2]],strata)
-	
-	coef.deviates[[1]] <- t(coef.deviates[[1]])
-	colnames(coef.deviates[[1]]) <- colnames(X)
-	
-	coef.deviates[[2]] <- t(coef.deviates[[2]])
-	coef.deviates[[2]] <- cbind(coef.deviates[[2]][,-1])
-	colnames(coef.deviates[[2]]) <- colnames(Z)[-1]
-	
-	names(beta) <- colnames(X)
-	names(gamma) <- colnames(Z)
-	
-	if(ncol(X)==1) names(beta) <- all.vars(formula.linear)[2]
-	if(ncol(Z)==1) names(gamma) <- "(Intercept)"
+	if(any(weights!=1))
+		vcov <- solve(vcov.lexpit.revised.strata(beta,gamma,cbind(Y),X,Z,cbind(w),strata))
+	else
+		vcov <- solve(vcov.lexpit.revised(beta,gamma,cbind(Y),X,Z,cbind(w)))
+		
+	names(beta) <- attr(terms(formula.linear),"term.labels")
+	names(gamma) <- c("(Intercept)",attr(terms(formula.expit),"term.labels"))
 	
 	# NULL MODEL, ESTIMATE IS THE OVERALL MEAN
 	ll.null <- -LL(Y,sum(Y*w)/sum(w),cbind(weights))
 	
+	options("warn"=warn.option)
+
+	p <- ncol(X)
+	q <- ncol(Z)
+		
 	new("lexpit",
 		coef.linear = beta,
 		coef.expit = gamma,
-		vcov.linear = vcov[[1]],
-		vcov.expit = vcov[[2]],
+		vcov.linear = matrix(vcov[1:p,1:p],p,p),
+		vcov.expit = vcov[(p+1):(p+q),(p+1):(p+q)],
 		formula.linear = formula.linear,
 		formula.expit = formula.expit,
 		df.residual = nrow(X)-ncol(X)-ncol(Z),
-		p = ncol(X),
-		q = ncol(Z),
+		p = p,
+		q = q,
 		data = data,
 		which.kept = which.kept,
 		y = Y,
@@ -119,7 +120,7 @@ LL <- function(Y,p,w){
 		loglik = -LL(Y,X%*%beta+expit(Z%*%gamma),cbind(weights)),
 		loglik.null = ll.null,
 		barrier.value = fit$barrier.value,
-		dBeta = coef.deviates
+		control.lexpit = control.lexpit
 	)
 	
 }

@@ -6,7 +6,11 @@ if(class(object)[1]!="lexpit"&class(object)[1]!="blm")
 	
 if(any(predict(object)<=criterion|predict(object)>=1-criterion)){
 	which <- which(predict(object)<=criterion|predict(object)>=1-criterion)
-	model.matrix(object@formula,object@data)[which,]
+	if(class(object)[1]=="lexpit")
+		cbind(model.matrix(object@formula.linear,object@data)[,-1],
+				 model.matrix(object@formula.expit,object@data)[,-1])[which,]
+	else
+		cbind(model.matrix(object@formula,object@data)[,-1])[which,]
 }
 else{
 	cat("No boundary constraints using the given criterion.")

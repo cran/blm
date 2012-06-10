@@ -33,7 +33,7 @@ Objects can be created by calls of the form \code{new("lexpit", ...)}.
   \item{\code{loglik}}{value of log-likelihood (normalized for weighted likelihood) under full model} 
   \item{\code{loglik.null}}{value of log-likelihood (normalized for weighted likelihood) under null model} 
   \item{\code{barrier.value}}{value of the barrier function at the optimum}
-  \item{\code{dBeta}}{list of \code{linear} and \code{expit} influence measures}
+   \item{\code{control.lexpit}}{list with control parameters for optimization algorithm}
  } 
 }			     
 
@@ -72,10 +72,6 @@ Returns vector of linear predictors for each subject of the fitted model.
 
   \item{confint}{\code{signature(object = "lexpit", parm, level = 0.95,...)}:
 Returns confidence interval (at a given \code{level}) for the specified regression parameters.
-  }
-
-  \item{dBeta}{\code{signature(object = "lexpit")}:
-Extract dBetas for the fitted \code{lexpit} model. These are the jackknife deviations by subject and regression coefficient.
   }
 
  }

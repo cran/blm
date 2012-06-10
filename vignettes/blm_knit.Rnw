@@ -1,14 +1,15 @@
- \documentclass[a4paper]{report}
-\usepackage{RJournal}
+\documentclass[12pt]{article}
+%\usepackage{RJournal}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
 \usepackage{hyperref}
 \usepackage[round]{natbib}
 \bibliographystyle{abbrvnat}
 %\VignetteIndexEntry{Introduction to blm}
 %\VignettePackage{blm}
 
+\setcounter{secnumdepth}{2}
 
 \begin{document}
-\begin{article}
 
 \title{Vignette for package \texttt{blm}}
 \author{Stephanie A. Kovalchik}
@@ -16,7 +17,9 @@
 
 \maketitle
 
-\abstract{
+\begin{center}
+{\large SUMMARY}
+\end{center}
   
   The \texttt{blm} package provides functions for fitting flexible binomial
   models for cohort studies of a binary outcome and population-based case-control studies. The binomial
@@ -26,7 +29,6 @@
   function. Estimation of the model parameters is based on constrained
   maximum likelihood, which ensures that the fitted model yields
   feasible risk estimates. In this vignette, BLM and LEXPIT model fitting is demonstrated with analyses of a simulated population-based case-control study.
-  }
 
 
 \section{Binomial linear model (BLM)}
@@ -62,7 +64,6 @@ region of feasibility, constrained maximum likelihood is used. Since the system 
 
 As an illustration of the model syntax we consider a model to estimate the risk of disease based on a simulated population-based case control study. We begin the \texttt{R} session by loading the package, \texttt{blm}, and the dataset \texttt{ccdata}.
 
-{\small
 <<>>=
 library(blm)
 
@@ -72,7 +73,6 @@ names(ccdata)
 
 table(ccdata$y)
 @ 
-}
 
 The sample consists of \Sexpr{nrow(ccdata)}  subjects and case status is indicated by the variable \texttt{y}. There are two design variables, the \texttt{strata} and inverse sampling fractions \texttt{w} , and two candidate explanatory variables, which are an indicator for female gender, \texttt{female}, and a discrete variable, \texttt{packyear}, ndicating the number of pack-years smoked. 
 
@@ -80,7 +80,6 @@ The syntax for \texttt{blm}
 is much like \texttt{lm}, consisting of \texttt{formula} and
 \texttt{data} arguments. For population-based estimates, we need to additionally include the design information on sample stratification and the sampling fractions. The following code fits a population-based linear risk model with additive effects due to female gender and packyears.
 
-{\small
 <<>>=
 fit <- blm(y~female+packyear, data = ccdata,
              weight = ccdata$w, 
@@ -90,59 +89,54 @@ fit
 
 summary(fit)
 @ 
-}
 
 The method \texttt{summary} provides measures of variance and Wald tests of significance for each fitted parameter. Also, a logical object indicates whether convergence of the optimizaiton algorithm was achieved.
 
-The variance-covariance is estimated from an influence-based method \cite{Deville:1999}. The coefficients and variance-covariance can be extracted directly using \texttt{coef} and \texttt{vcov}.
+The variance-covariance is estimated using Taylor-linearization \cite{Deville:1999}. The coefficients and variance-covariance can be extracted directly using \texttt{coef} and \texttt{vcov}.
 
-{\small
 <<>>=
 coef(fit)
 
 vcov(fit)
 @ 
-}
+
 
 Each regression coefficient for an explanatory variable of the BLM model provides an estimate of the adjusted risk difference associated with a unit increase in the given variable. Thus, the fitted model suggests that there is a \Sexpr{round(coef(fit)[2]*100,1)}\% increased risk for females and a \Sexpr{round(coef(fit)[3]*1000,1)}\% increased absolute risk for every 10-year increase in cumulative pack-years smoked. To obtain confindence intervals for these parameters, we can use the \texttt{confint} method.
 
-{\small
 <<>>=
 confint(fit)
 confint(fit, parm="female")
 @ 
-}
+
 
 To assess the constraints imposed on the model, we can examine the \texttt{barrier.value}, which is one of the slots of the \texttt{blm} class.
 
-{\small
 <<>>=
 fit@barrier.value
 @ 
-}
+
 
 Risk estimates near the boundary could be an indication of influential points or a poor-fitting model with BLM or LEXPIT. Boundary estimates for a given distance criterion can be obtained with the function \texttt{which.at.boundary}.
 
-{\small
 <<>>=
 which.at.boundary(fit)
 which.at.boundary(fit, criter = 1e-3)
 @
-}
+
 
 In the above, we first use a default criterion of \Sexpr{1e-6} or \Sexpr{1-1e-6}. In the second case, we provide a user-specified criterion. With either criterion, no estimate was at the boundary. 
 
-As an additional way to evalute potential influential points in a BLM or LEXPIT model fit, each class has a method \texttt{dBeta}, which returns the jackknife deviates by subject and parameter. Here, we plot a sparkline-like figure of the packyear deviates by subject (Figure~\ref{fig1}).
+As an additional way to evalute potential influential points in a BLM or LEXPIT model fit, each class has a method \texttt{displacement}, which returns the confidence interval displacements by subject and parameter. Here, we plot a sparkline-like figure of the displacement measures of influence by subject (Figure~\ref{fig:1}).
 
-<<eval=FALSE>>=
-plot(y = dBeta(fit)[,2], x = 1:nrow(ccdata),
+<<fig=influence,eval=FALSE,fig=TRUE>>=
+plot(y = displacement(fit), x = 1:nrow(ccdata),
        type = "h")
 @  
 
 \begin{figure} \centering
-\includegraphics[width=3.25in]{influence.pdf}
-\label{fig1}
-\caption{Jackknife deviates for variable \texttt{packyear} by subject}
+\includegraphics[height=.5\textwidth]{influence.pdf}
+\caption{Confidence interval displacement by subject}
+\label{fig:1}
 \end{figure}
 
   
@@ -154,22 +148,50 @@ Rsquared(fit)
 
 Comparisons of observed and expected counts for the target population can be made with the function \texttt{EO} for expected and observed. A factor can also be supplied to compare the expected to observed within subgroups defined by the categorical variable.
 
-{\small
 <<>>=
 EO(fit)
 EO(fit, ccdata$female)
 @ 
-}
 
 When the number of covariate classes represented by the model are few, we can perform a goodness-of-fit test with Pearson's chi-squared statistic. This compares the observed to expected within each unique risk type defined by the model. 
 
-{\small
 <<>>=
 gof.pearson(fit)
 @ 
-}
+
 
 This suggest a lack of fit at the population level. When a model has more than 10 covariate classes, the Hosemer-Lemeshow test should be used. For the \texttt{blm} function, this test is implemented by the function \texttt{gof}.
+
+\subsection{Mode of exposure's effect}
+
+Because of the lack of fit of the additive model, we might suspect the linear assumption for pack-years. We could assess the functional relationship between risk and pack-years after accounting for the effect of gender by looking at excess risk. As a graphical diagnostic, we can compute the weighted average excess risk for the smaller model in bins defined by a categorical representaton of the explanatory variable. The function \texttt{excess.risk} performs this calculaton for \texttt{blm} or \texttt{lexpit} model objects. 
+
+As an example, we use \texttt{excess.risk} to compute the binned residuals within each pack-year group with a BLM fit that has gender as the only explanatory variable. We then plot the excess risk against pack-years to see the shape of their functional relationship. The function returns the vector of the binned residuals with names equal to the categories of the grouping variable.
+
+<<>>=
+fit <- blm(y~female, data = ccdata,
+             weight = ccdata$w, 
+             strata = ccdata$strata)
+
+r <- excess.risk(fit, group=ccdata$packyear)
+
+round(r, 3)
+@ 
+
+<<label=excess,eval=FALSE,fig=TRUE>>=
+plot(y = r, x = as.numeric(names(r)),
+     ylab = "Binned excess risk",
+     xlab = "packyears", las = 1,
+     type = "b")
+@  
+
+\begin{figure} \centering
+\includegraphics[height=.4\textwidth]{excess.pdf}
+\caption{Excess risk plot against pack-years after accounting for gender in a BLM regressionanalysis.}
+\label{fig:2}
+\end{figure}
+
+Figure~\ref{fig:2} suggests a non-linear relationship between risk adjusted for gender and pack-years smoked.
 
 \section{Linear-Expit (LEXPIT) model}
 
@@ -188,7 +210,7 @@ logistic effects. The first component of $z_i$ is an intercept term,
 so that when the remaining components are 0, $\mbox{expit}(\gamma_0)$
 is the baseline risk. As in BLM, $\beta$ represent risk differences
 for unit changes in $x_i$. The coefficients $\gamma$ are odds ratios
-after baseline adjustment for the effects of $x_i'\beta$, what we can think of as `residual odds ratios'.
+after baseline adjustment for the effects of $x_i'\beta$, what we can think of as `excess odds ratios'.
 
 The LEXPIT model provides a more flexible way to estimate risk
 differences since it imposes fewer parameter constraints. This is
@@ -200,7 +222,6 @@ Estimation for the LEXPIT model proceeds in two stages. The first stage fixes th
 
 The syntax for the \texttt{lexpit} takes two formula arguments: one for the linear components and one for the expit components. Note that the intercept is always included in the expit term. Otherwise, the syntax is identical to \texttt{blm}.
 
-{\scriptsize
 <<>>=
 fit.lexpit <- lexpit(y~female, y~packyear, 
                      data = ccdata,
@@ -209,7 +230,7 @@ fit.lexpit <- lexpit(y~female, y~packyear,
 
 summary(fit.lexpit)
 @ 
-}
+
 
 All of the methods described for the \texttt{blm} class are also available for \texttt{lexpit} objects.
 
@@ -249,6 +270,5 @@ Madsen K, Nielsen H, and Tingleff O (2004).
 
 
 \end{thebibliography}
-\end{article}
 
 \end{document}

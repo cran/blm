@@ -13,6 +13,7 @@ A direct probability model for regression with a binary outcome from observation
 \usage{
 lexpit(formula.linear,formula.expit,data,na.action=na.omit,
 					weights=NULL,strata=NULL,par.init=NULL,
+					warn = FALSE,
 					control.lexpit=list(max.iter=1000,tol=1E-7),...)
 }
 
@@ -24,8 +25,9 @@ lexpit(formula.linear,formula.expit,data,na.action=na.omit,
     \item{weights}{Vector of weights equal to the number of observations. For population-based case-control study, weights are the inverse sampling fractions for controls.}
 \item{strata}{vector indicating the stratification for weighted regression with stratified observational data}
 \item{par.init}{vector (optional) of initial parameters}
+\item{warn}{logical indicator whether to include warnings during algorithm fitting. Default of \code{FALSE} suppresses warnings when testing for feasible parameters.}
   \item{control.lexpit}{list with control parameters for optimization algorithm}
-\item{...}{Additional arguments ?}
+\item{...}{Additional arguments passed to \code{constrOptim}}
 }
 
 \value{
@@ -35,7 +37,7 @@ Returns an object of class \code{lexpit}.
 \details{
 \code{lexpit} model uses a two-stage optimization procedure. At the first stage linear terms the solutions to the maximum of a pseudo log-likelihood using a constrained optimization algorithm with an adaptive barrier method, \code{constrOptim} (Lange, 2010). The second stage maximizes the pseudo log-likelihood with respect to the expit terms using iterative reweighted least squares with an offset term for the linear component of the model.
 
-Variance estimates are based on Taylor linearization (Shah, 2002).
+Variance estimates are based on Taylor linearization (Shah, 2002). When \code{weights} are not NULL, it is assumed that the study is a case-control design. 
 
 }
 
@@ -44,6 +46,7 @@ Variance estimates are based on Taylor linearization (Shah, 2002).
 \seealso{\link{constrOptim}, \link{nlm}}
 
 \references{
+
 Lange, K. (2010) \emph{Numerical Analysis for Statisticians}, Springer.
 
 

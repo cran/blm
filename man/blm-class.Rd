@@ -28,7 +28,6 @@ Objects can be created by calls of the form \code{new("blm", ...)}.
   \item{\code{loglik}}{value of log-likelihood (normalized for weighted likelihood) under full model} 
   \item{\code{loglik.null}}{value of log-likelihood (normalized for weighted likelihood) under null model} 
   \item{\code{barrier.value}}{value of the barrier function at the optimum}
-   \item{\code{dBeta}}{matrix of influence measures}
  } 
 }			     
 
@@ -69,11 +68,6 @@ Returns vector of linear predictors for each subject of the fitted model.
   \item{confint}{\code{signature(object = "blm", parm, level = 0.95,...)}:
 Returns confidence interval (at a given \code{level}) for the specified regression parameters.
   }
-
-  \item{dBeta}{\code{signature(object = "blm")}:
-Extract dBetas for the fitted \code{blm} model. These are the jackknife deviations by subject and regression coefficient.
-  }
-
  }
 }
 

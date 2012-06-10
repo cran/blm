@@ -12,7 +12,7 @@ A direct probability model for regression with a binary outcome from observation
 
 \usage{
 blm(formula, data, na.action = na.omit, weights = NULL, 
-    strata = NULL, par.init = NULL, ...)
+    strata = NULL, par.init = NULL, warn=FALSE,...)
 }
 
 \arguments{
@@ -22,6 +22,7 @@ blm(formula, data, na.action = na.omit, weights = NULL,
     \item{weights}{Vector of weights equal to the number of observations. For population-based case-control study, weights are the inverse sampling fractions for controls.}
 \item{strata}{vector indicating the stratification for weighted regression with stratified observational data}
 \item{par.init}{vector (optional) of initial parameters}
+\item{warn}{logical indicator whether to include warnings during algorithm fitting. Default of \code{FALSE} suppresses warnings when testing for feasible parameters.}
 \item{...}{Additional arguments passed to \code{constrOptim}}
 }
 
@@ -30,7 +31,7 @@ Returns an object of class \code{blm}.
 }
 
 \details{
-The \code{blm} model coefficients are the solutions to the maximum of a pseudo log-likelihood using a constrained optimization algorithm with an adaptive barrier method, \code{constrOptim} (Lange, 2010). Variance estimates are based on Taylor linearization (Shah, 2002).
+The \code{blm} model coefficients are the solutions to the maximum of a pseudo log-likelihood using a constrained optimization algorithm with an adaptive barrier method, \code{constrOptim} (Lange, 2010). Variance estimates are based on Taylor linearization (Shah, 2002). When \code{weights} are not NULL, it is assumed that the study is a case-control design.
 
 }
 
@@ -40,7 +41,6 @@ The \code{blm} model coefficients are the solutions to the maximum of a pseudo l
 
 \references{
 Lange, K. (2010) \emph{Numerical Analysis for Statisticians}, Springer.
-
 
 Shah, BV. (2002) Calculus of Taylor deviations. Joint Statistical Meetings.
 }

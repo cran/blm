@@ -1,26 +1,27 @@
-\name{dBeta}
+\name{leverage}
 \docType{methods}
-\alias{dBeta}
-\alias{dBeta,blm-method}
-\alias{dBeta,lexpit-method}
+\alias{leverage}
+\alias{leverage,blm-method}
+\alias{leverage,lexpit-method}
 
-\title{Measures of influence of parameters \code{blm} and \code{lexpit} objects.}
+\title{Measures of leverage of observations in a \code{blm} and \code{lexpit} model fit.}
 
 \description{
 
-Returns the jackknife deviations by subject and regression parameter which can be used to assess the influence of rows and columns of the fitted \code{lexpit} or \code{blm} model.
+Returns the leverage of observations in a \code{blm} and \code{lexpit} model fit.
 
 }
 
 \section{Methods}{
 \describe{
 
-  \item{dBeta}{\code{signature(object = "blm")}:
-Extract dBetas for the fitted \code{blm} model. These are the jackknife deviations by subject and regression coefficient.
+  \item{leverage}{\code{signature(object = "blm")}:
+Extract leverages for the fitted \code{blm} model.
+
   }
 
-  \item{dBeta}{\code{signature(object = "lexpit")}:
-Extract dBetas for the fitted \code{lexpit} model. These are the jackknife deviations by subject and regression coefficient.
+  \item{leverage}{\code{signature(object = "lexpit")}:
+Extract leverages for the fitted \code{lexpit} model. 
   }
 
  }
@@ -36,12 +37,12 @@ data(ccdata)
 fit <- blm(y~female+packyear, data = ccdata,
        			weight = ccdata$w, strata = ccdata$strata)
 
-apply(dBeta(fit),2,summary) # LOOK AT INFLUENCE RANGE FOR EACH PARAMETER
+summary(leverage(fit))
 
 fit <- lexpit(y~female, y~packyear, data = ccdata,
        			weight = ccdata$w, strata = ccdata$strata)
 
-dBeta(fit)$expit[1:10]
+sort(leverage(fit), decreas=TRUE)[1:5]
 }
 
 

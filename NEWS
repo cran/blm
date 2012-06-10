@@ -10,3 +10,19 @@ The hosmerlem function has been changed to gof.
 The gof.pearson function has been added to compute Pearson's goodness-of-fit test.
 
 A revised vignette reflects the changes in 2.1.
+
+
+Version 2.2
+-------------------------------------------------------------------
+
+Added warn argument to suppress warnings thrown when testing for feasible parameters.
+
+Function excess.risk added. Computes binned excess risk by a grouping variable. Useful for diagnosing functional relationship between risk and explanatory variable.
+
+Correction to variance calculation to include case status as a stratification variable for case-control studies.
+
+Revised vignette includes description of use of the excess.risk function.
+
+Added likelihood ratio test for hypothesis testing with cohort data (method LRT).
+
+Added leverage and displacement functions for blm and lexpit models to diagnose the model fit.
