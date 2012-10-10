@@ -33,3 +33,12 @@ Version 2.3
 Fixes to vcov method to handle big matrices.
 
 Correction to gof function and addition of adjustment for weighted estimates.
+
+Version 2.4
+-------------------------------------------------------------------
+
+Added initialization parameters in influence methods.
+
+Modified summary method to shorten print out of t and p-values.
+
+Added aarp data set.

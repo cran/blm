@@ -68,7 +68,9 @@ setMethod("confint","lexpit",
 
 setMethod("summary","lexpit",
 			function(object,...){
-				
+			
+			digits = max(3, getOption("digits") - 3)
+			
 			#LINEAR		
 			t <- object@coef.linear/sqrt(diag(object@vcov.linear))
 			p <- sapply(t,function(x)2*pt(abs(x),df=object@df.residual,lower.tail=FALSE))
@@ -79,8 +81,11 @@ setMethod("summary","lexpit",
 				t,p
 			)	
 			
+			
 			row.names(linear.mat) <- names(object@coef.linear)
 			colnames(linear.mat) <- c("Est.","Std. Err","t-value","p-value")
+			
+			print.linear.mat <- format(linear.mat, digits=digits)
 			
 			#EXPIT
 			t <- object@coef.expit/sqrt(diag(object@vcov.expit))
@@ -92,14 +97,18 @@ setMethod("summary","lexpit",
 				t,p
 			)	
 			
+			print.expit.mat <- format(expit.mat, digits=digits)
+			
 			row.names(expit.mat) <- names(object@coef.expit)
 			colnames(expit.mat) <- c("Est.","Std. Err","t-value","p-value")
 			
+			print.expit.mat <- format(expit.mat, digits = digits)
+			
 			cat("Linear effects:\n")
-			print(linear.mat)
+			print(print.linear.mat, quote=FALSE)
 			
 			cat("\nExpit effects:\n")
-			print(expit.mat)
+			print(print.expit.mat, quote=FALSE)
 			
 			cat("\nConverged:",object@converged,"\n")
 			
@@ -171,6 +180,8 @@ setMethod("confint","blm",
 setMethod("summary","blm",
 			function(object,...){
 
+			digits = max(3, getOption("digits") - 3)
+	
 			#LINEAR		
 			t <- object@coef/sqrt(diag(object@vcov))
 			p <- sapply(t,function(x) 2*pt(abs(x),df=object@df.residual,lower.tail=FALSE))
@@ -181,10 +192,14 @@ setMethod("summary","blm",
 				t,p
 			)	
 			
+			print.linear.mat <- format(linear.mat, digits=digits)
+			
 			row.names(linear.mat) <- names(object@coef)
 			colnames(linear.mat) <- c("Est.","Std. Err","t-value","p-value")
 			
-			print(linear.mat)
+			print.linear.mat <- format(linear.mat, digits=digits)
+	
+			print(print.linear.mat, quote=FALSE)
 			
 			cat("\nConverged:",object@converged,"\n")
 invisible(linear.mat)

@@ -65,14 +65,18 @@ LL <- function(Y,p,w){
 	w <- cbind(weights/mean(weights))
 	
 	if(!is.list(par.init)){
+		
 		beta.init <- rep(0,ncol(X))
+		
 		gamma.init <- do.call(glm,
 					list(
 						formula=formula.expit,
 						data=data,
 						family="binomial",
 						weight=weights))$coef
+		
 						}
+		
 	else{
 		beta.init <- par.init$linear
 		gamma.init <- par.init$expit
@@ -87,7 +91,7 @@ LL <- function(Y,p,w){
 	
 	beta <- beta.init
 	gamma <- gamma.init
-	
+
 	while(i<control.lexpit$max.iter&!threshold.met){
 		
 		fit <- optim.lexpit(beta,gamma,Y,X,Z,w,...)
@@ -103,17 +107,36 @@ LL <- function(Y,p,w){
     # else
 		# vcov <- solve(vcov.lexpit.revised.bigmatrix(beta,gamma,cbind(Y),X,Z,cbind(w)))
 	
+	initial <- c(expit(gamma[1]), beta)
+	 
 	 if(!all(weights==1)){
 	 	if(nrow(data)>50000)
-		 	vcov <- vcov.lexpit.big(formula.linear, formula.expit, data, weights)
+		 	vcov <- vcov.lexpit.big(formula.linear, 
+		 										formula.expit, 
+		 										data, 
+		 										weights,
+		 										initial)
+
 		 else
-		 	vcov <- vcov.influence.lexpit.strata(formula.linear, formula.expit, data, weights, strata)
-		 	}
+		 	vcov <- vcov.influence.lexpit.strata(formula.linear, 
+		 															formula.expit, 
+		 															data, 
+		 															weights, 
+		 															strata,
+		 															initial)
+		 	 }
 	 else{
 	 	if(nrow(data)>50000)
-		 	vcov <- vcov.lexpit.big(formula.linear, formula.expit, data)
+		 	vcov <- vcov.lexpit.big(formula.linear, 
+		 										formula.expit, 
+		 										data,
+		 										weights=NULL,
+		 										initial)
 		 else
-		 	vcov <- vcov.influence.lexpit(formula.linear, formula.expit, data)
+		 	vcov <- vcov.influence.lexpit(formula.linear, 
+		 												   formula.expit, 
+		 												   data,
+		 												   initial)
 		}
 	 	
 	names(beta) <- x.labels

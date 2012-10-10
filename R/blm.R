@@ -69,15 +69,15 @@ LL <- function(Y,p,w){
 	
 	 if(!all(weights==1)){
 	 	if(nrow(data)>50000)
-		 	vcov <- vcov.blm.big(formula, data, weights)
+		 	vcov <- vcov.blm.big(formula, data, weights, beta)
 		 else
-		 	vcov <- vcov.influence.blm.strata(formula, data, weights, strata)
+		 	vcov <- vcov.influence.blm.strata(formula, data, weights, strata, beta)
 		 	}
 	 else{
 	 	if(nrow(data)>50000)
-		 	vcov <- vcov.blm.big(formula, data)
+		 	vcov <- vcov.blm.big(formula, data, weights=NULL, beta)
 		 else
-		 	vcov <- vcov.influence.blm(formula, data)
+		 	vcov <- vcov.influence.blm(formula, data, beta)
 	  }
 
 	 	

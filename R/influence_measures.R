@@ -1,6 +1,11 @@
-influence.blm <- function(formula, data, weights=NULL){
-	fit <- do.call("glm", args=list(formula=formula, data=data, 
-												weights=weights,family=binomial(link=make.link("identity"))))
+influence.blm <- function(formula, data, weights=NULL,initial){
+	
+	fit <- do.call("glm", args=list(formula=formula, 
+												data=data,
+												start=initial,
+												weights=weights,
+												family=binomial(link=make.link("identity"))))
+
 	lm.influence(fit)$coefficients
 }
 
@@ -11,15 +16,15 @@ influence.lexpit <- function(formula, data, weights=NULL){
 	lm.influence(fit)$coefficients
 }
 
-vcov.influence.blm <- function(formula, data){
-	influence <- influence.blm(formula, data)
+vcov.influence.blm <- function(formula, data, initial){
+	influence <- influence.blm(formula, data, weights=NULL, initial)
 t(influence)%*%influence
 }
 
-vcov.influence.lexpit <- function(formula.linear, formula.expit, data){
+vcov.influence.lexpit <- function(formula.linear, formula.expit, data, initial){
 
-	influence.linear <- influence.blm(formula.linear, data)
-	influence.expit <- influence.lexpit(formula.expit, data)
+	influence.linear <- influence.blm(formula.linear, data, weights=NULL, initial)
+	influence.expit <- influence.lexpit(formula.expit, data, initial)
 	
 	influence <- cbind(influence.linear[,-1],influence.expit)
 	
@@ -27,9 +32,9 @@ t(influence)%*%influence
 }
 
 
-vcov.influence.blm.strata <- function(formula, data, weights, strata){
+vcov.influence.blm.strata <- function(formula, data, weights, strata, initial){
 	
-	influence <- influence.blm(formula, data, weights)
+	influence <- influence.blm(formula, data, weights, initial)
 	means <- influence
 	size <- table(strata)[strata]
 	size <- size/(size-1)
@@ -43,9 +48,9 @@ t(influence)%*%influence
 }
 
 
-vcov.influence.lexpit.strata <- function(formula.linear, formula.expit, data, weights, strata){
+vcov.influence.lexpit.strata <- function(formula.linear, formula.expit, data, weights, strata, initial){
 
-	influence.linear <- influence.blm(formula.linear, data, weights)
+	influence.linear <- influence.blm(formula.linear, data, weights, initial)
 	influence.expit <- influence.lexpit(formula.expit, data, weights)
 	influence <- cbind(influence.linear[,-1],influence.expit)
 	
@@ -61,15 +66,15 @@ vcov.influence.lexpit.strata <- function(formula.linear, formula.expit, data, we
 t(influence)%*%influence
 }
 
-vcov.blm.big <- function(formula, data, weights=NULL){
-	fit <- do.call("glm", args=list(formula=formula, data=data, 
+vcov.blm.big <- function(formula, data, weights=NULL, initial){
+	fit <- do.call("glm", args=list(formula=formula, data=data, start=initial,
 												weights=weights,family=binomial(link=make.link("identity"))))
 vcov(fit)
 }
 
-vcov.lexpit.big <- function(formula.linear, formula.expit, data, weights=NULL){
+vcov.lexpit.big <- function(formula.linear, formula.expit, data, weights=NULL, initial){
 
-	fit <- do.call("glm", args=list(formula=formula.linear, data=data, 
+	fit <- do.call("glm", args=list(formula=formula.linear, data=data, start = initial,
 												weights=weights,family=binomial(link=make.link("identity"))))
 
    vcov.linear <- vcov(fit)

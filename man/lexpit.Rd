@@ -24,7 +24,7 @@ lexpit(formula.linear,formula.expit,data,na.action=na.omit,
 \item{na.action}{function specifying how missing data should be handled, \link{na.action}}
     \item{weights}{Vector of weights equal to the number of observations. For population-based case-control study, weights are the inverse sampling fractions for controls.}
 \item{strata}{vector indicating the stratification for weighted regression with stratified observational data}
-\item{par.init}{vector (optional) of initial parameters}
+\item{par.init}{list (optional) of initial parameters for \code{linear} and \code{expit} terms.}
 \item{warn}{logical indicator whether to include warnings during algorithm fitting. Default of \code{FALSE} suppresses warnings when testing for feasible parameters.}
   \item{control.lexpit}{list with control parameters for optimization algorithm}
 \item{...}{Additional arguments passed to \code{constrOptim}}
@@ -61,4 +61,21 @@ fit <- lexpit(y~female,y~packyear,weights = ccdata$w,
        		strata=ccdata$strata,data=ccdata)
 
 summary(fit)
+
+# LEXPIT MODEL FOR BLADDER CANCER RISK BY AGE 70
+formula.linear <- bladder70~female * smoke_status
+formula.expit <- bladder70~redmeat+fiber.centered+I(fiber.centered^2)
+
+# ADDITIVE EFFECTS FOR GENDER AND SMOKING
+# LOGISTIC EFFECTS FOR FIBER AND REDMEAT CONSUMPTION
+data(aarp)
+
+fit <- lexpit(formula.linear, formula.expit, aarp, weight=aarp$w)
+
+# SUMMARY
+summary(fit)
+confint(fit)
+
+# FITTED ABSOLUTE RISK PER 1,000 PERSONS
+head(predict(fit)*1000)
 }
