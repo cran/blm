@@ -24,7 +24,14 @@ LL <- function(Y,p,w){
 	
 	Y <- model.frame(formula,data)[,1]
 	X <- model.matrix(formula,data)
-
+	
+	if(is.matrix(X)){
+		x.labels <- colnames(X)
+	}
+	else{
+		x.labels <- attr(terms(formula), "term.labels") 
+	}
+	
 	if(is.null(strata)){
 				strata <- rep(1,nrow(data)) 
 			}
@@ -55,14 +62,25 @@ LL <- function(Y,p,w){
 	fit <- blm.optim(Y,X,w,beta.init,...)
 	beta <- fit$par
 	
-	if(any(weights!=1))
-		vcov <- solve(vcov.blm.revised.strata(beta,cbind(Y),X,cbind(w),strata))
-	else
-		vcov <- solve(vcov.blm.revised(beta,cbind(Y),X,cbind(w)))
+	# if(!all(weights==1))
+		# vcov <- solve(vcov.blm.revised.strata(beta,cbind(Y),X,cbind(w),strata))
+	# else
+		# vcov <- solve(vcov.blm.revised.bigmatrix(beta,cbind(Y),X,cbind(w)))
 	
-	x.labels <- attr(terms(formula), "term.labels") # DOES NOT INCLUDE INTERCEPT
+	 if(!all(weights==1)){
+	 	if(nrow(data)>50000)
+		 	vcov <- vcov.blm.big(formula, data, weights)
+		 else
+		 	vcov <- vcov.influence.blm.strata(formula, data, weights, strata)
+		 	}
+	 else{
+	 	if(nrow(data)>50000)
+		 	vcov <- vcov.blm.big(formula, data)
+		 else
+		 	vcov <- vcov.influence.blm(formula, data)
+	  }
 
-	if(attr(terms(formula),"intercept")==1) x.labels <- c("(Intercept)", x.labels)
+	 	
 	names(beta) <- x.labels
 	
 	# NULL MODEL, ESTIMATE IS THE OVERALL MEAN

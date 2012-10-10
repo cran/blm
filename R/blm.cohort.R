@@ -87,6 +87,7 @@ results
 		coef = beta,
 		formula= formula,
 		df.residual = nrow(X)-ncol(X),
+		data = data,
 		converged = fit$convergence==0,
 		par.init = beta.init,
 		loglik = -LL(Y,X%*%beta),
@@ -97,7 +98,7 @@ results
 }
 
 
-LRT <- function(object,data,var=NULL,...){
+LRT <- function(object,var=NULL,...){
 	
 	f <- object$formula
 	labels <- attr(terms(f),"term.labels")
@@ -106,7 +107,7 @@ LRT <- function(object,data,var=NULL,...){
 	
 	formulas <- lapply(labels, function(term) update(f, paste("~.-",term, sep="")))
 	
-	LL <- sapply(formulas, function(new.formula) blm.cohort(new.formula,data)$loglik)
+	LL <- sapply(formulas, function(new.formula) blm.cohort(new.formula,object$data)$loglik)
 	
 	LRTs <- 2*(object$loglik-LL)
 	

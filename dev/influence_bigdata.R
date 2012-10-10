@@ -1,25 +1,3 @@
-vcov.blm.revised.bigmatrix <- function(beta,Y,X,w){
-	
-	x.params <- ncol(X)
-	p <- X%*%beta
-	A <- 1/nu(p)*(Y-p)
-	nu.A <- (A+1)/(nu(p))
-	tryDiag <- tryCatch(diag(as.numeric(w*nu.A)),error=function(x)NA)
-	if(!is.matrix(tryDiag)){
-		# COLUMN BY COLUMN PROCESSING
-		W <- as.numeric(w*nu.A)
-		XW <- X
-		for(j in 1:x.params){
-			XW[,j] <- X[,j]*W
-		}
-		HX <- -t(X)%*%XW
-	}
-	else{
-		HX <- matrix(-t(X)%*%tryDiag%*%X,x.params,x.params)
-	}
--HX
-}
-
 pearson.deviates <- function(object){
 	
 	p <- predict(object)
@@ -70,17 +48,28 @@ lexpit.leverage <- function(object){
 diag(HAT.BETA+HAT.GAMMA)
 }
 
-vcov.blm.revised <- function(beta,Y,X,w){
+vcov.blm.revised.bigdata <- function(beta,Y,X,w){
 	
 	x.params <- ncol(X)
 	p <- X%*%beta
 	A <- 1/nu(p)*(Y-p)
 	nu.A <- (A+1)/(nu(p))
-	W <- diag(as.numeric(w*nu.A))
-	HX <- matrix(-t(X)%*%W%*%X,x.params,x.params)
-	
+	tryDiag <- tryCatch(diag(as.numeric(w*nu.A)),error=function(x)NA)
+	if(!is.matrix(tryDiag)){
+		# COLUMN BY COLUMN PROCESSING
+		W <- as.numeric(w*nu.A)
+		XW <- X
+		for(j in 1:x.params){
+			XW[,j] <- X[,j]*W
+		}
+		HX <- -t(X)%*%XW
+	}
+	else{
+		HX <- matrix(-t(X)%*%tryDiag%*%X,x.params,x.params)
+	}
 -HX
 }
+
 
 
 vcov.lexpit.revised <- function(beta,gamma,Y,X,Z,w){
@@ -113,60 +102,6 @@ vcov.lexpit.revised <- function(beta,gamma,Y,X,Z,w){
 -H
 }
 
-vcov.lexpit.revised.bigmatrix <- function(beta,gamma,Y,X,Z,w){
-	
-	x.params <- ncol(X)
-	z.params <- ncol(Z)
-	n.params <- x.params+z.params
-	
-	p.beta <- X%*%beta
-	p.gamma <- expit(Z%*%gamma)
-	p <- p.beta+p.gamma
-	A <- 1/nu(p)*(Y-p)
-	nu.A <- (A+1)/(nu(p))
-	
-	tryDiag <- tryCatch(diag(as.numeric(w*nu.A)),error=function(x)NA)
-	if(!is.matrix(tryDiag)){
-	 	W.beta <- as.numeric(w*nu.A)
-	 	W.gamma <- as.numeric(w*ddexpit(p.gamma)*A-dexpit(p.gamma)^2*nu.A)
-		W.beta.gamma <- as.numeric(w*dexpit(p.gamma)*nu.A)
-		XW <- X
-		ZW <- Z
-		XZW <- Z
-		
-		for(j in 1:x.params){
-			XW[,j] <- X[,j]*W.beta
-		}
-		
-		for(j in 1:z.params){
-			ZW[,j] <- Z[,j]*W.gamma
-			XZW[,j] <- Z[,j]*W.beta.gamma
-		}
-	
-		HX <- -t(X)%*%XW
-		HXZ <- -t(X)%*%XZW
-		HZ <- t(Z)%*%ZW
-			
-	}
-	else{
-		W.gamma <- diag(as.numeric(w*ddexpit(p.gamma)*A-dexpit(p.gamma)^2*nu.A))
-		W.beta.gamma <- diag(as.numeric(w*dexpit(p.gamma)*nu.A))
-	
-		HX <- -t(X)%*%tryDiag%*%X
-		HXZ <- -t(X)%*%W.beta.gamma%*%Z
-		HZ <- t(Z)%*%W.gamma%*%Z
-	}
-	
-	H <- matrix(0,n.params,n.params)
-	
-	H[1:x.params,1:x.params] <- HX
-	H[1:x.params,(x.params+1):(x.params+z.params)] <- HXZ
-	H[(x.params+1):(x.params+z.params),1:x.params] <- t(HXZ)
-	H[(x.params+1):(x.params+z.params),(x.params+1):(x.params+z.params)] <- HZ
-	
--H
-}
-
 vcov.blm.revised.strata <- function(beta,Y,X,w,strata){
 
 	p <- ncol(X)
@@ -176,7 +111,7 @@ vcov.blm.revised.strata <- function(beta,Y,X,w,strata){
 	for(i in levels(strata)){
 		n.strata <- sum(strata==i)
 		multiplier <- (n-1)/(n-p)*(n.strata/(n.strata-1))
-		H <- H+multiplier*vcov.blm.revised.bigmatrix(beta,cbind(Y[strata==i,]),cbind(X[strata==i,]),cbind(w[strata==i,]))
+		H <- H+multiplier*vcov.blm.revised(beta,cbind(Y[strata==i,]),cbind(X[strata==i,]),cbind(w[strata==i,]))
 	}
 
 H

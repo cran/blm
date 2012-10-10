@@ -10,6 +10,7 @@
 \setcounter{secnumdepth}{2}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 \title{Vignette for package \texttt{blm}}
 \author{Stephanie A. Kovalchik}
@@ -126,20 +127,6 @@ which.at.boundary(fit, criter = 1e-3)
 
 In the above, we first use a default criterion of \Sexpr{1e-6} or \Sexpr{1-1e-6}. In the second case, we provide a user-specified criterion. With either criterion, no estimate was at the boundary. 
 
-As an additional way to evalute potential influential points in a BLM or LEXPIT model fit, each class has a method \texttt{displacement}, which returns the confidence interval displacements by subject and parameter. Here, we plot a sparkline-like figure of the displacement measures of influence by subject (Figure~\ref{fig:1}).
-
-<<fig=influence,eval=FALSE,fig=TRUE>>=
-plot(y = displacement(fit), x = 1:nrow(ccdata),
-       type = "h")
-@  
-
-\begin{figure} \centering
-\includegraphics[height=.5\textwidth]{influence.pdf}
-\caption{Confidence interval displacement by subject}
-\label{fig:1}
-\end{figure}
-
-  
 There are several functions to evaluate the BLM model fit. McFadden's R-squared, adjusted and unadjusted, provides a measure of the variability explained by the explanatory variables.
 
 <<>>=
@@ -160,7 +147,7 @@ gof.pearson(fit)
 @ 
 
 
-This suggest a lack of fit at the population level. When a model has more than 10 covariate classes, the Hosemer-Lemeshow test should be used. For the \texttt{blm} function, this test is implemented by the function \texttt{gof}.
+This suggests a lack of fit at the population level. When a model has more than 10 covariate classes, the Hosemer-Lemeshow test should be used. For the \texttt{blm} function, this test is implemented by the function \texttt{gof}.
 
 \subsection{Mode of exposure's effect}
 

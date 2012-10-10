@@ -11,9 +11,14 @@ mcfadden.adj <- function(loglik,loglik.null,num.params){
   1-(loglik-num.params)/loglik.null
 }
 	
+	if(class(object)=="lexpit")
+		num <- object@p+object@q
+	else
+		num <- length(object@coef)
+		
 	list(
 		R2 = mcfadden(object@loglik,object@loglik.null),
-		R2adj = mcfadden.adj(object@loglik,object@loglik.null,length(object@coef))
+		R2adj = mcfadden.adj(object@loglik,object@loglik.null,num)
 	 )
 	
 }

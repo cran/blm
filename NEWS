@@ -26,3 +26,10 @@ Revised vignette includes description of use of the excess.risk function.
 Added likelihood ratio test for hypothesis testing with cohort data (method LRT).
 
 Added leverage and displacement functions for blm and lexpit models to diagnose the model fit.
+
+Version 2.3
+-------------------------------------------------------------------
+
+Fixes to vcov method to handle big matrices.
+
+Correction to gof function and addition of adjustment for weighted estimates.

@@ -27,6 +27,20 @@ LL <- function(Y,p,w){
 	
 	if(x.has.intercept) X <- X[,-1]
 	
+   if(is.matrix(X)){
+		x.labels <- colnames(X)
+	}
+	else{
+		x.labels <- attr(terms(formula.linear), "term.labels") 
+	}
+	
+    if(is.matrix(Z)){
+		z.labels <- colnames(Z)
+	}
+	else{
+		z.labels <- attr(terms(formula.expit), "term.labels")
+	}
+	
 	if(!is.matrix(X)) X <- cbind(X)
 	if(!is.matrix(Z)) Z <- cbind(Z)
 
@@ -84,13 +98,26 @@ LL <- function(Y,p,w){
 		i <- i+1
 	}
 	
-	if(any(weights!=1))
-		vcov <- solve(vcov.lexpit.revised.strata(beta,gamma,cbind(Y),X,Z,cbind(w),strata))
-	else
-		vcov <- solve(vcov.lexpit.revised(beta,gamma,cbind(Y),X,Z,cbind(w)))
-		
-	names(beta) <- attr(terms(formula.linear),"term.labels")
-	names(gamma) <- c("(Intercept)",attr(terms(formula.expit),"term.labels"))
+	# if(!all(weights==1))
+		# vcov <- solve(vcov.lexpit.revised.strata(beta,gamma,cbind(Y),X,Z,cbind(w),strata))
+    # else
+		# vcov <- solve(vcov.lexpit.revised.bigmatrix(beta,gamma,cbind(Y),X,Z,cbind(w)))
+	
+	 if(!all(weights==1)){
+	 	if(nrow(data)>50000)
+		 	vcov <- vcov.lexpit.big(formula.linear, formula.expit, data, weights)
+		 else
+		 	vcov <- vcov.influence.lexpit.strata(formula.linear, formula.expit, data, weights, strata)
+		 	}
+	 else{
+	 	if(nrow(data)>50000)
+		 	vcov <- vcov.lexpit.big(formula.linear, formula.expit, data)
+		 else
+		 	vcov <- vcov.influence.lexpit(formula.linear, formula.expit, data)
+		}
+	 	
+	names(beta) <- x.labels
+	names(gamma) <- z.labels
 	
 	# NULL MODEL, ESTIMATE IS THE OVERALL MEAN
 	ll.null <- -LL(Y,sum(Y*w)/sum(w),cbind(weights))
