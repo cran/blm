@@ -47,3 +47,8 @@ Version 2.4.1
 -------------------------------------------------------------------
 
 Removed dev directory
+
+Version 2.4.2
+-------------------------------------------------------------------
+
+Added risk.exposure.plot; removed excess.risk function; updated vignette with example for this plot

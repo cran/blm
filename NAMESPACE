@@ -1,5 +1,5 @@
 export(blm,lexpit,EO,which.at.boundary,Rsquared,expit,logit,gof,gof.pearson,
-       excess.risk,LRT)
+       risk.exposure.plot,LRT)
 exportClasses(blm,lexpit)
 importFrom("stats",coef,confint,vcov,predict,resid)
 exportMethods(show,coef,vcov,predict,confint,summary,resid)

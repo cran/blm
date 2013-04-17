@@ -38,7 +38,8 @@ vcov.influence.blm.strata <- function(formula, data, weights, strata, initial){
 	means <- influence
 	size <- table(strata)[strata]
 	size <- size/(size-1)
-	
+	size <- ifelse(size==1,size, size/(size-1))
+
 	for(i in 1:ncol(influence)){
 		means[,i] <- (tapply(influence[,i], strata, mean)[strata])
 		influence[,i] <- (influence[,i]-means[,i])*size
@@ -53,13 +54,13 @@ vcov.influence.lexpit.strata <- function(formula.linear, formula.expit, data, we
 	influence.linear <- influence.blm(formula.linear, data, weights, initial)
 	influence.expit <- influence.lexpit(formula.expit, data, weights)
 	influence <- cbind(influence.linear[,-1],influence.expit)
-	
+
 	means <- influence
 	size <- table(strata)[strata]
-	size <- size/(size-1)
+	size <- ifelse(size==1,size, size/(size-1))
 	
 	for(i in 1:ncol(influence)){
-		means[,i] <- (tapply(influence[,i], strata, mean)[strata])
+		means[,i] <- (tapply(influence[,i], strata, mean))[strata]
 		influence[,i] <- (influence[,i]-means[,i])*size
 	}
 	
