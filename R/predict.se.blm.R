@@ -22,7 +22,7 @@ predict.se.blm <- function(object,newdata,se=FALSE){
   }
   
   if(!se){
-    return(p)
+    return(as.numeric(p))
   }
   else{
     

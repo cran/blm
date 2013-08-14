@@ -1,34 +1,4 @@
-excess.risk <- function(object, group){
-	
-	# FUNCTION TO COMPUTE BINNED EXCESS RISK BY GROUPING VARIABLE
-	
-	if(class(object)[1]!="lexpit"&class(object)[1]!="blm"){
-		if(object$family$link!="logit") stop("Object must be of class blm, lexpit, or glm with logit link.")
-			excess.logit.risk(object, group)
-	}
-	else{
-	p <- predict(object)
-	p.bar <- tapply(p, group, mean)
-	w.bar <- tapply(object@weights, group, sum)
-	y.bar <- tapply(object@weights*object@y, group, sum)
-	
-	y.bar/w.bar-p.bar
-	}	
-}
-
-
-
-excess.logit.risk <- function(object, group){
-	
-	w.bar <- tapply(object$prior.weights, group, sum)
-	p.bar <- tapply(expit(predict(object)), group, sum)
-	y.bar <- tapply(object$y*object$prior.weights, group, sum)
-
-y.bar/w.bar-p.bar
-}
-
-
-risk.exposure.plot <- function(y, group, weights=NULL,...){
+crude.risk  <- function(formula, data, weights=NULL, na.action=na.omit){
 	
 risk <- function(start, stop, y, group, weights){
 	lower.upper <- quantile(group, c(start, stop))
@@ -44,19 +14,27 @@ covariate <- function(start, stop, group, weights){
 sum(group[index]*weights[index])/sum(weights[index])
 }
 
+	data <- data[,all.vars(formula)]	
 	if(is.null(weights)) weights <- rep(1, length(y))
+	data$weights <- weights
+	data <- na.action(data)
 	
-Y <- mapply(risk, start=seq(0,.8,by=.01), stop=seq(.2,1,by=.01), MoreArgs=list(group=group, y=y, weights=weights))
-X <- mapply(covariate, start=seq(0,.8,by=.01), stop=seq(.2,1,by=.01), MoreArgs=list(group=group, weights=weights))
-
-
-data <- list(
-	risk = Y,
-	x = X
-)
-
-	invisible(data)
+	y <- data[,all.vars(formula)[1]]
+	group <- data[,all.vars(formula)[2]]
 	
-	scatter.smooth(y=data$risk, x=data$x, ylab="Average risk",...)
+	Y <- mapply(risk, start=seq(0,.8,by=.01), stop=seq(.2,1,by=.01), MoreArgs=list(group=group, y=y, weights=data$weights))
+	X <- mapply(covariate, start=seq(0,.8,by=.01), stop=seq(.2,1,by=.01), MoreArgs=list(group=group, weights=data$weights))
 
+data.frame(risk = Y, x = X)
+}
+
+
+risk.exposure.plot <- function(object, scale=1,...){
+	
+	supplied.args <- list(...)
+	
+	if("ylab" %in% names(supplied.args))
+		scatter.smooth(y=object$risk*scale, x=object$x, ...)
+	else
+		scatter.smooth(y=object$risk*scale, x=object$x, ylab="Average risk",...)
 }

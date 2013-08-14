@@ -1,6 +1,6 @@
 \name{vcov}
 \docType{methods}
-\alias{vcov}
+\alias{vcov.blm}
 \alias{vcov,blm-method}
 \alias{vcov,lexpit-method}
 

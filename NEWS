@@ -57,3 +57,8 @@ Version 2.4.3
 -------------------------------------------------------------------
 
 Corrected bug in stratification variable in variance calculation for blm (function: vcov.influence.blm.strata); update predict method so response variable is not necessary
+
+Version 2.4.4
+-------------------------------------------------------------------
+
+Added formula accessor; Made output of predict a vector; Use printCoefmat in the summary function; Created crude.risk function; Added log-likelihood method; Added dependency on stats4; References and CITATION to JSS paper

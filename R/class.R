@@ -83,9 +83,9 @@ setMethod("summary","lexpit",
 			
 			
 			row.names(linear.mat) <- names(object@coef.linear)
-			colnames(linear.mat) <- c("Est.","Std. Err","t-value","p-value")
+			colnames(linear.mat) <- c("Estimate","Std.Err","t value","Pr(>|t|)")
 			
-			print.linear.mat <- format(linear.mat, digits=digits)
+#			print.linear.mat <- format(linear.mat, digits=digits)
 			
 			#EXPIT
 			t <- object@coef.expit/sqrt(diag(object@vcov.expit))
@@ -100,15 +100,15 @@ setMethod("summary","lexpit",
 			print.expit.mat <- format(expit.mat, digits=digits)
 			
 			row.names(expit.mat) <- names(object@coef.expit)
-			colnames(expit.mat) <- c("Est.","Std. Err","t-value","p-value")
+			colnames(expit.mat) <- c("Estimate","Std.Err","t value","Pr(>|t|)")
 			
-			print.expit.mat <- format(expit.mat, digits = digits)
+	#		print.expit.mat <- format(expit.mat, digits = digits)
 			
 			cat("Linear effects:\n")
-			print(print.linear.mat, quote=FALSE)
+			printCoefmat(linear.mat)
 			
 			cat("\nExpit effects:\n")
-			print(print.expit.mat, quote=FALSE)
+			printCoefmat(expit.mat)
 			
 			cat("\nConverged:",object@converged,"\n")
 			
@@ -195,11 +195,9 @@ setMethod("summary","blm",
 			print.linear.mat <- format(linear.mat, digits=digits)
 			
 			row.names(linear.mat) <- names(object@coef)
-			colnames(linear.mat) <- c("Est.","Std. Err","t-value","p-value")
+			colnames(linear.mat) <- c("Estimate","Std.Err","t value","Pr(>|t|)")
 			
-			print.linear.mat <- format(linear.mat, digits=digits)
-	
-			print(print.linear.mat, quote=FALSE)
+			printCoefmat(linear.mat)
 			
 			cat("\nConverged:",object@converged,"\n")
 invisible(linear.mat)
@@ -216,6 +214,21 @@ setMethod("vcov","blm",
 setMethod("resid", "blm", function(object) object@y - predict(object))
 setMethod("resid", "lexpit", function(object) object@y - predict(object))
 
+setMethod("logLik","blm", function(object,..){
+	LL <- object@loglik
+	class(LL) <- "logLik"
+	attr(LL,"df") <- object@df.residual
+	attr(LL,"nobs") <- nrow(object@data)
+LL	
+})
+
+setMethod("logLik","lexpit", function(object,..){
+	LL <- object@loglik
+	class(LL) <- "logLik"
+	attr(LL,"df") <- object@df.residual
+	attr(LL,"nobs") <- nrow(object@data)
+LL	
+})
 
 setGeneric("leverage",function(object) standardGeneric("leverage"))
 
@@ -227,3 +240,7 @@ setGeneric("displacement",function(object) standardGeneric("displacement"))
 setMethod("displacement","blm",function(object) C(object))
 setMethod("displacement","lexpit",function(object) C(object))
 
+setGeneric("model.formula",function(object) standardGeneric("model.formula"))
+
+setMethod("model.formula","blm",function(object) object@formula)
+setMethod("model.formula","lexpit",function(object) list(linear = object@formula.linear, expit = object@formula.expit))

@@ -1,6 +1,6 @@
 \name{show}
 \docType{methods}
-\alias{show}
+\alias{show.blm}
 \alias{show,blm-method}
 \alias{show,lexpit-method}
 
@@ -15,11 +15,11 @@ Print estimates of a \code{blm} or \code{lexpit} model fit.
 \section{Methods}{
 \describe{
 \item{show}{\code{signature(object = "blm")}:
-Call, coefficient estimates, and AIC for fitted model.
+Call and coefficient estimates.
   }
 
 \item{show}{\code{signature(object = "lexpit")}:
-Call, coefficient estimates, and AIC for fitted model.
+Call and coefficient estimates.
   }
   }
  }

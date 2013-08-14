@@ -2,11 +2,11 @@
 \alias{LRT}
 
 
-\title{Performs likelihood-ratio test for LEXPIT and BLM models of cohort data}
+\title{Performs likelihood-ratio test for lexpit and BLM models of cohort data}
 
 
 \description{
-Computes the likelihood ratio test for the significance of the specified variable in a LEXPIT or BLM model fit to cohort data. This method is only valid for study designs that use simple random sampling.
+Computes the likelihood ratio test for the significance of the specified variable in a lexpit or BLM model fit to cohort data. This method is only valid for study designs that use simple random sampling.
 
 }
 

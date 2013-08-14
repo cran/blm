@@ -31,7 +31,7 @@ if(class(object)[1]!="lexpit"&class(object)[1]!="blm")
   
   P = 1 - pchisq(chisq, length(levels(X)) - 2)
 
-  result <- list(E = E, O = O, chisq=chisq,p.value=P)
+  result <- list(E = E, O = O, X2=chisq,p.value=P)
   
   
   print(cbind(E = round(result$E, 2), O = result$O))

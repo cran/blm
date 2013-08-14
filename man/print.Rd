@@ -1,6 +1,6 @@
 \name{print}
 \docType{methods}
-\alias{print}
+\alias{print.blm}
 \alias{print,blm-method}
 \alias{print,lexpit-method}
 

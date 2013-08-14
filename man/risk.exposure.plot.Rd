@@ -11,18 +11,13 @@ Calculates the weighted average crude risk against the average exposure level fo
 }
 
 \usage{
-risk.exposure.plot(y, group, weights=NULL,...)
+risk.exposure.plot(object, scale=1,...)
 }
 
 \arguments{
-  \item{y}{vector of binary event indicators}
-  \item{group}{vector of the continuous variable from which the sequential groups will be constructed}
-  \item{weights}{vector of sample weights for computing the population-based crude risk}
+  \item{object}{list or data.frame with \code{risk} and \code{x} covariate. Return object of \link{crude.risk}}
+  \item{scale}{multiplicative factor to modify scale of crude risk estimates}
   \item{...}{additional arguments passed to \link{scatter.smooth}}
-}
-
-\value{
-Returns a list of \code{risk} and \code{x} containing the average crude risk estimates and covariates, respectively. 
 }
 
 \details{
@@ -36,9 +31,11 @@ The risk-exposure scatter plot is intended to explore the possible functional re
 
 data(aarp)
 
-risk.exposure.plot(aarp$bladder70,
-		   aarp$redmeat,
-		   weights = aarp$w,
+risk <- crude.risk(bladder70~redmeat,
+		  weights = aarp$w,
+		  data = aarp)
+
+risk.exposure.plot(risk,
 		   xlab = "Avg. Red Meat Consumption")
 
 }

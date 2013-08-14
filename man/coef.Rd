@@ -1,6 +1,6 @@
 \name{coef}
 \docType{methods}
-\alias{coef}
+\alias{coef.blm}
 \alias{coef,blm-method}
 \alias{coef,lexpit-method}
 

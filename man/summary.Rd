@@ -1,6 +1,6 @@
 \name{summary}
 \docType{methods}
-\alias{summary}
+\alias{summary.blm}
 \alias{summary,blm-method}
 \alias{summary,lexpit-method}
 

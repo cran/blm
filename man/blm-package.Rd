@@ -11,9 +11,10 @@ The functions \code{blm} and \code{lexpit} implement a binomial linear and linea
 \tabular{ll}{
 Package: \tab blm\cr
 Type: \tab Package\cr
-Version: \tab 2013.2.4.3\cr
-Date: \tab 2013-5-09\cr
-Depends: R (>= 2.10.1), stats, methods, MASS
+Version: \tab 2013.2.4.4\cr
+Date: \tab 2013-8-14\cr
+Depends: \tab R (>= 2.10.1), methods\cr
+Imports: \tab stats, stats4\cr
 License: \tab GPL (>= 2) \cr
 LazyLoad: \tab yes
 }
@@ -23,6 +24,12 @@ LazyLoad: \tab yes
 \author{
 
 Maintainer: Stephanie Kovalchik <s.a.kovalchik@gmail.com>
+
+}
+
+\references{
+
+Kovalchik S, Varadhan R (2013). Fitting Additive Binomial Regression Models with the R Package blm. \emph{Journal of Statistical Software}, 54(1), 1-18. URL: \url{http://www.jstatsoft.org/v54/i01/}.
 
 }
 

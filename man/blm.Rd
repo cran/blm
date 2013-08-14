@@ -40,6 +40,9 @@ The \code{blm} model coefficients are the solutions to the maximum of a pseudo l
 \seealso{\link{constrOptim}}
 
 \references{
+
+Kovalchik S, Varadhan R (2013). Fitting Additive Binomial Regression Models with the R Package blm. \emph{Journal of Statistical Software}, 54(1), 1-18. URL: \url{http://www.jstatsoft.org/v54/i01/}.
+
 Lange, K. (2010) \emph{Numerical Analysis for Statisticians}, Springer.
 
 Shah, BV. (2002) Calculus of Taylor deviations. Joint Statistical Meetings.
@@ -63,6 +66,8 @@ data(aarp)
 fit <- blm(bladder70~female * smoke_status, 
 			      data = aarp, 
 			      weight=aarp$w)
+
+logLik(fit)
 
 # INTERCEPT IS BASELINE RISK
 # ALL OTHER COEFFICIENTS ARE RISK DIFFERENCES FROM BASELINE

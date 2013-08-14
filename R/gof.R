@@ -27,7 +27,7 @@ gof <- function(object){
 
 	    if(all(w==1)){
 	        P = 1 - pchisq(chisq, df=8)
-	        list(table = result, chisq = chisq, p.value = P)
+	        list(table = result, X2 = chisq, p.value = P)
 	     }
 	     else{
 	     	# ADJUSTED F, ARCHER 2007
@@ -35,7 +35,7 @@ gof <- function(object){
 	     	df.denom <- length(y)-8
 	     	chisq <- chisq*((length(y)-8)/(10*length(y)))
 	     	P <- 1 - pf(chisq,df.num,df.denom)
-	     	list(table = result, F = chisq, p.value = P)
+	     	list(table = result, X2 = chisq, p.value = P)
 	     }
 
 }

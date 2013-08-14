@@ -52,10 +52,17 @@ List of estimates and convergence information.
 Extractor for fitted coefficients. 
   }
 
+\item{logLik}{\code{signature(object = "blm")}:
+Extractor for log-likelihood of \code{blm} model.
+  }
+
+\item{model.formula}{\code{signature(object = "blm")}:
+Extractor for formula of \code{blm} object. 
+  }
+
 \item{resid}{\code{signature(object = "blm")}:
 Extractor for residuals. 
   }
-  
   
   \item{vcov}{\code{signature(object = "blm")}:
 Extractor for variance-covariance based on Taylor series large-sample Hessian approximation with the pseudo-likelihood of the constrained optimization.

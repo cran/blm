@@ -5,7 +5,7 @@
 \title{Class "lexpit"}
 
 \description{
-Class for linear-expit regression (LEXPIT).
+Class for linear-expit regression (lexpit).
 }
 
 \section{Objects from the Class}{
@@ -57,7 +57,15 @@ List of estimates and convergence information.
 \item{coef}{\code{signature(object = "lexpit")}:
 Extractor for fitted coefficients. 
   }
-  
+
+\item{logLik}{\code{signature(object = "lexpit")}:
+Extractor for log-likelihood of \code{lexpit} model.
+  }
+
+\item{model.formula}{\code{signature(object = "lexpit")}:
+Extractor for formula of \code{lexpit} object. 
+  }
+
   \item{vcov}{\code{signature(object = "lexpit")}:
 Extractor for variance-covariance based on Taylor series large-sample Hessian approximation with the pseudo-likelihood of the constrained optimization.
   }

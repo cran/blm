@@ -1,6 +1,6 @@
 \name{predict}
 \docType{methods}
-\alias{predict}
+\alias{predict.blm}
 \alias{predict,blm-method}
 \alias{predict,lexpit-method}
 

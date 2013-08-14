@@ -1,6 +1,6 @@
 \name{confint}
 \docType{methods}
-\alias{confint}
+\alias{confint.blm}
 \alias{confint,blm-method}
 \alias{confint,lexpit-method}
 

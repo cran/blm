@@ -13,7 +13,7 @@ if(any(predict(object)<=criterion|predict(object)>=1-criterion)){
 		cbind(model.matrix(object@formula,object@data)[,-1])[which,]
 }
 else{
-	cat("No boundary constraints using the given criterion.")
+	cat("No boundary constraints using the given criterion.\n\n")
 	invisible(NA)
 }
 		

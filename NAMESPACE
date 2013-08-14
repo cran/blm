@@ -1,6 +1,8 @@
-export(blm,lexpit,EO,which.at.boundary,Rsquared,expit,logit,gof,gof.pearson,
-       risk.exposure.plot,LRT)
+export(blm,lexpit,crude.risk,risk.exposure.plot,
+       EO,which.at.boundary,Rsquared,expit,logit,gof,gof.pearson,LRT)
 exportClasses(blm,lexpit)
-importFrom("stats",coef,confint,vcov,predict,resid)
-exportMethods(show,coef,vcov,predict,confint,summary,resid)
+import("methods")
+importFrom("stats",predict,resid)
+importFrom("stats4",coef,confint,vcov,logLik)
+exportMethods(show,coef,vcov,predict,confint,summary,resid,model.formula,logLik)
 

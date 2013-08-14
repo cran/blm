@@ -1,6 +1,6 @@
 \name{resid}
 \docType{methods}
-\alias{resid}
+\alias{resid.blm}
 \alias{resid,blm-method}
 \alias{resid,lexpit-method}
 
