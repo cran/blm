@@ -36,7 +36,7 @@ LL <- function(Y,p,w){
 				strata <- rep(1,nrow(data)) 
 			}
 	else{
-				strata <- strata[which.kept]
+			strata <- strata[which.kept]
 		}
 			
 	if(!class(strata)=="factor") strata <- factor(strata)

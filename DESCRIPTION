@@ -1,8 +1,8 @@
 Package: blm
 Type: Package
 Title: Binomial linear and linear-expit regression
-Version: 2013.2.4.2
-Date: 4-17-2013
+Version: 2013.2.4.3
+Date: 5-09-2013
 Depends: R (>= 2.10.1), stats, methods, MASS
 Author: S. Kovalchik
 Maintainer: S.Kovalchik <s.a.kovalchik@gmail.com>
@@ -12,7 +12,7 @@ Description: Implements regression models for binary data on the
 License: GPL (>= 2)
 LazyLoad: yes
 BuildVignettes: no
-Packaged: 2013-04-17 20:05:04 UTC; kovalchiksa
+Packaged: 2013-05-10 13:35:30 UTC; kovalchiksa
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2013-04-17 23:18:25
+Date/Publication: 2013-05-17 16:12:08

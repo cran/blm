@@ -1,8 +1,8 @@
-cfe6e2371613ad3992cd33018e5a2562 *DESCRIPTION
+958fbe31660a4f56d70d210de68204d0 *DESCRIPTION
 b864095faa36dcf9de8d8cf8a152e5c1 *NAMESPACE
-2832fbac2ce51181f5981ab21b315a99 *NEWS
+06ec264d9e520745c4c4a42c7364f27c *NEWS
 af941d0da89d9f5f26220dc6b045ca0a *R/Rsquared.R
-712c01ee931e07acd563bb05e3fdf7d0 *R/blm.R
+1d9a97f1ef0e8f5ecc31d74ba47f73cc *R/blm.R
 27232adcb0d5e047ad6639b5d88bed5d *R/blm.cohort.R
 3c039a6929a4e5c02db9d7906e67e57b *R/class.R
 45abfb5323471ca99d3c26b5c86fee29 *R/excess.risk.R
@@ -10,11 +10,11 @@ de71665f5c1b58e325da918f4aeb0f2f *R/gof.R
 33c578e6ff3249d63e722c4ab18479bd *R/gof.pearson.R
 6705fd3ef2b0faff827f9c1697d731d2 *R/helpers.R
 e13ead61f70bfa4187fe1585cdfe442b *R/influence.R
-55d7e03f646d9101b100e7df47800cb7 *R/influence_measures.R
+d48cabad116e8f5c127850daf8a1b933 *R/influence_measures.R
 bec5f9df209e4a14687592d2e935b5ef *R/lexpit.R
 1ab2dbcd3ded68d7639bc7f0890a99be *R/lexpit.lrt.R
 75e85a521dc923dbe16ffd16d1063869 *R/optim.lexpit.R
-748ea6329e00ac3abac27fffa4627ee8 *R/predict.se.blm.R
+585a4f21ed1578931b84675fda5b5517 *R/predict.se.blm.R
 e7ea4c2ffca95e168b5c79fa155868f5 *R/stage1.optim.R
 cef2932b8cab9670e5c9b727b9c99a4d *R/stage2.optim.R
 6a3139c8521675dcf31fb7a0f38edb75 *R/tapply.risk.R
@@ -27,7 +27,7 @@ b2b2d2b91e7b4307dc73fd3ff6f8b92f *man/LRT.Rd
 85d545d3e87a227f762bb7996c28693f *man/Rsquared.Rd
 b7a6a5d5a0b9c25b5b9807bb271e3f94 *man/aarp.Rd
 bd858dd0072063bcd902aabce7239a51 *man/blm-class.Rd
-ab1678e81f07d7aefcc2d508d188d193 *man/blm-package.Rd
+9100d15a9b420a05b9269f0e684aef2a *man/blm-package.Rd
 814d6b0de7da9b62d003dce407c8c814 *man/blm.Rd
 27e5b5891fb1e1b0c9b5114c10790b56 *man/coef.Rd
 013da8f74a2927dfc6240f69445993c9 *man/confint.Rd

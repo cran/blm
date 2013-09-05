@@ -37,7 +37,6 @@ vcov.influence.blm.strata <- function(formula, data, weights, strata, initial){
 	influence <- influence.blm(formula, data, weights, initial)
 	means <- influence
 	size <- table(strata)[strata]
-	size <- size/(size-1)
 	size <- ifelse(size==1,size, size/(size-1))
 
 	for(i in 1:ncol(influence)){

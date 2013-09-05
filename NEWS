@@ -52,3 +52,8 @@ Version 2.4.2
 -------------------------------------------------------------------
 
 Added risk.exposure.plot; removed excess.risk function; updated vignette with example for this plot
+
+Version 2.4.3
+-------------------------------------------------------------------
+
+Corrected bug in stratification variable in variance calculation for blm (function: vcov.influence.blm.strata); update predict method so response variable is not necessary
