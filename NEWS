@@ -42,3 +42,8 @@ Added initialization parameters in influence methods.
 Modified summary method to shorten print out of t and p-values.
 
 Added aarp data set.
+
+Version 2.4.1
+-------------------------------------------------------------------
+
+Removed dev directory
