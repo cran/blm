@@ -3,7 +3,7 @@ predict.se.blm <- function(object,newdata,se=FALSE){
   if(missing(newdata))
     newdata <- object@data
     
-  if(class(object)=="lexpit"){
+  if(is(object)[1]=="lexpit"){
     X <- model.matrix(update(object@formula.linear,NULL~.),newdata)
     Z <- model.matrix(update(object@formula.expit,NULL~.),newdata)
     
@@ -26,7 +26,7 @@ predict.se.blm <- function(object,newdata,se=FALSE){
   }
   else{
     
-    if(class(object)=="blm"){
+    if(is(object)[1]=="blm"){
       se <- sqrt(apply(X,1,function(x) t(x)%*%object@vcov%*%x))
     }
     else{

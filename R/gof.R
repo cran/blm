@@ -1,6 +1,6 @@
 gof <- function(object){
 	
-	if(class(object)[1]=="lexpit"|class(object)[1]=="blm"){
+	if(is(object)[1]=="lexpit"|is(object)[1]=="blm"){
 		p <- predict(object)
 		y <- object@y
 		w <- object@weights
@@ -41,7 +41,7 @@ gof <- function(object){
 }
 
 EO <- function(object, index=NULL,level=.95){
-	if(class(object)[1]!="lexpit"&class(object)[1]!="blm")
+	if(is(object)[1]!="lexpit"&is(object)[1]!="blm")
 		stop("Object must be an instance of a blm or lexpit model.")
 	
 	if(is.null(index)) index <- rep("Overall", length(object@y))

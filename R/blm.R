@@ -39,7 +39,7 @@ LL <- function(Y,p,w){
 			strata <- strata[which.kept]
 		}
 			
-	if(!class(strata)=="factor") strata <- factor(strata)
+	if(!is(strata)[1]=="factor") strata <- factor(strata)
 	
 	if(is.null(weights)){
 			weights <- rep(1,nrow(X))

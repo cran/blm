@@ -40,7 +40,7 @@ setMethod("show","lexpit",
 			function(object) print(object))
 
 aic <- function(object){
-	if(class(object)=="lexpit")
+	if(is(object)[1]=="lexpit")
 	-2*object@loglik+2*(object@p+object@q)
 	else
 	-2*object@loglik+2*length(coef(object))

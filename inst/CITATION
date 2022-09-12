@@ -9,12 +9,12 @@ citEntry(entry = "Article",
   volume       = "54",
   number       = "1",
   pages        = "1--18",
-  url          = "http://www.jstatsoft.org/v54/i01/",
+  url          = "https://www.jstatsoft.org/v54/i01/",
 
   textVersion  =
   paste("Stephanie Kovalchik, Ravi Varadhan (2013).",
         "Fitting Additive Binomial Regression Models with the R Package blm.",
         "Journal of Statistical Software, 54(1), 1-18.",
-        "URL http://www.jstatsoft.org/v54/i01/.")
+        "URL https://www.jstatsoft.org/v54/i01/.")
 )
 

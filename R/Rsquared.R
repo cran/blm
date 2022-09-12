@@ -1,6 +1,6 @@
 Rsquared <- function(object){
 
-if(class(object)[1]!="lexpit"&class(object)[1]!="blm")
+if(is(object)[1]!="lexpit"&is(object)[1]!="blm")
 		stop("Object must be an instance of a blm or lexpit model.")
 		
 mcfadden <- function(loglik,loglik.null){
@@ -11,7 +11,7 @@ mcfadden.adj <- function(loglik,loglik.null,num.params){
   1-(loglik-num.params)/loglik.null
 }
 	
-	if(class(object)=="lexpit")
+	if(is(object)=="lexpit")
 		num <- object@p+object@q
 	else
 		num <- length(object@coef)

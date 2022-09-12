@@ -1,13 +1,13 @@
 gof.pearson <- function(object){
 
-if(class(object)[1]!="lexpit"&class(object)[1]!="blm")
+if(is(object)[1]!="lexpit"&is(object)[1]!="blm")
 		stop("Object must be an instance of a blm or lexpit model.")
 
   Y <- object@y
   prediction <- predict(object)
   
   # UNIQUE COVARIATE GROUPS
-  if(class(object)[1]=="blm"){
+  if(is(object)[1]=="blm"){
 	  X <- model.matrix(object@formula, object@data)
   }
   else{

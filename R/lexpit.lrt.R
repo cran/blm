@@ -1,10 +1,10 @@
 LRT <- function(object, var){
 	
-	if(class(object)[1]!="lexpit"&class(object)[1]!="blm")	
+	if(is(object)[1]!="lexpit"&is(object)[1]!="blm")	
 		stop("Object must be of the lexpit or blm class.")
 	if(!all(object@weights==1))
 		stop("Likelihood-ratio test is only valid for simple random samples.")
-	if(class(object)[1]=="lexpit")
+	if(is(object)[1]=="lexpit")
 		lrt <- LRT.lexpit(object, var)
 	else
 		lrt <- LRT.blm(object, var)

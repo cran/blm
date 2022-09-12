@@ -22,7 +22,7 @@ aarp
 }
 
 \source{
-National Cancer Institute. National Institutes of Health AARP Diet and Health Study. \url{http://dietandhealth.cancer.gov/}. Accessed: 12/10/2012
+National Cancer Institute. National Institutes of Health AARP Diet and Health Study. \url{https://dceg.cancer.gov/research/who-we-study/nih-aarp-diet-health-study}. Accessed: 12/10/2012
 }
 
 \examples{

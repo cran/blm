@@ -1,8 +1,21 @@
-export(blm,lexpit,crude.risk,risk.exposure.plot,
-       EO,which.at.boundary,Rsquared,expit,logit,gof,gof.pearson,LRT)
+export(
+	blm,
+	lexpit,
+	crude.risk,
+	risk.exposure.plot,
+        EO,
+	which.at.boundary,
+	Rsquared,
+	expit,
+	logit,
+	gof,
+	gof.pearson,
+	LRT)
 exportClasses(blm,lexpit)
 import("methods")
-importFrom("stats",predict,resid)
 importFrom("stats4",coef,confint,vcov,logLik)
 exportMethods(show,coef,vcov,predict,confint,summary,resid,model.formula,logLik)
-
+importFrom("stats", "binomial", "constrOptim", "glm", "lm.influence",
+             "make.link", "model.frame", "model.matrix", "na.omit",
+             "nlm", "predict", "pchisq", "pf", "printCoefmat", "pt", "qnorm",
+             "quantile", "resid", "scatter.smooth", "terms", "update")

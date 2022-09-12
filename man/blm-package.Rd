@@ -29,7 +29,7 @@ Maintainer: Stephanie Kovalchik <s.a.kovalchik@gmail.com>
 
 \references{
 
-Kovalchik S, Varadhan R (2013). Fitting Additive Binomial Regression Models with the R Package blm. \emph{Journal of Statistical Software}, 54(1), 1-18. URL: \url{http://www.jstatsoft.org/v54/i01/}.
+Kovalchik S, Varadhan R (2013). Fitting Additive Binomial Regression Models with the R Package blm. \emph{Journal of Statistical Software}, 54(1), 1-18. URL: \url{https://www.jstatsoft.org/v54/i01/}.
 
 }
 

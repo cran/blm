@@ -41,7 +41,7 @@ The \code{blm} model coefficients are the solutions to the maximum of a pseudo l
 
 \references{
 
-Kovalchik S, Varadhan R (2013). Fitting Additive Binomial Regression Models with the R Package blm. \emph{Journal of Statistical Software}, 54(1), 1-18. URL: \url{http://www.jstatsoft.org/v54/i01/}.
+Kovalchik S, Varadhan R (2013). Fitting Additive Binomial Regression Models with the R Package blm. \emph{Journal of Statistical Software}, 54(1), 1-18. URL: \url{https://www.jstatsoft.org/v54/i01/}.
 
 Lange, K. (2010) \emph{Numerical Analysis for Statisticians}, Springer.
 

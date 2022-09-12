@@ -19,7 +19,7 @@ bootstrap.fit <- function(object, index){
 			  strata = object@strata[index]),
 			  error = function(x) NA)
 
-	if(class(fit)!="lexpit")
+	if(is(fit)[1]!="lexpit")
 		rep(NA, length(coef(object)))
 	else	
 		coef(fit)
